@@ -1,0 +1,12 @@
+Bm ^{
+    FHD_Stations ^{
+        2FindA=Mods\FHD_MODS\FHD_LOTOStations\Data\Image\2FindA.gi
+        2FindD=Mods\FHD_MODS\FHD_LOTOStations\Data\Image\2FindD.gi
+        2FindN=Mods\FHD_MODS\FHD_LOTOStations\Data\Image\2FindN.gi
+        2ShipA=Mods\FHD_MODS\FHD_LOTOStations\Data\Image\2ShipA.gi
+        2ShipD=Mods\FHD_MODS\FHD_LOTOStations\Data\Image\2ShipD.gi
+        2ShipN=Mods\FHD_MODS\FHD_LOTOStations\Data\Image\2ShipN.gi
+        TableBackground=Mods\FHD_MODS\FHD_LOTOStations\Data\Image\TableBackground.gi
+        LotteryBackground=Mods\FHD_MODS\FHD_LOTOStations\Data\Image\LotteryBackground.gi
+    }
+}

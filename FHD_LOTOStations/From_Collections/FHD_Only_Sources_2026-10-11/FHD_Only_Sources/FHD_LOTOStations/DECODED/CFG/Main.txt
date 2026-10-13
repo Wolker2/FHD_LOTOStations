@@ -1,0 +1,2112 @@
+ML ^{
+    GoodsShop ^{
+        Panel ^{
+            FHDStationsTableContainer ^{
+                Window ^{
+                    Active=False
+                    GraphButton ^{
+                        Caption=НОВЫЙ ПОИСК
+                        CaptionAlignX=Center
+                        CaptionAlignY=CenterEx
+                        CaptionColorDown=255,255,230
+                        CaptionColorDownA=255,255,230
+                        CaptionColorNormal=255,255,230
+                        CaptionColorNormalA=255,255,230
+                        Font=Font.2SmallBold
+                        Help=Help.SFFNewSearch
+                        ImageDown=GI,Bm.FormInfo2.2FindD
+                        ImageNormal=GI,Bm.FormInfo2.2FindN
+                        ImageNormalA=GI,Bm.FormInfo2.2FindA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=SFFNewSearch
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Open'),'form_name','GoodsShop');
+                        }
+                        Pos=22,642,-3
+                        Size=150,26
+                        Style=Style.GB.SoundNormal
+                    }
+                    GraphButton ^{
+                        Help=Help.SFFPageLeft
+                        ImageDown=GI,Bm.FormCount2.2SubD
+                        ImageNormal=GI,Bm.FormCount2.2SubN
+                        ImageNormalA=GI,Bm.FormCount2.2SubA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=SFFPageLeft
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.PageLeft'),'form_name','GoodsShop');
+                        }
+                        Pos=424,644,-3
+                        Size=21,21
+                        Style=Style.GB.SoundNormal
+                    }
+                    GraphButton ^{
+                        Help=Help.SFFPageRight
+                        ImageDown=GI,Bm.FormCount2.2AddD
+                        ImageNormal=GI,Bm.FormCount2.2AddN
+                        ImageNormalA=GI,Bm.FormCount2.2AddA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=SFFPageRight
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.PageRight'),'form_name','GoodsShop');
+                        }
+                        Pos=535,644,-3
+                        Size=21,21
+                        Style=Style.GB.SoundNormal
+                    }
+                    GraphButton ^{
+                        Caption=X
+                        CaptionAlignX=Center
+                        CaptionAlignY=CenterEx
+                        CaptionColorDown=255,255,230
+                        CaptionColorDownA=255,255,230
+                        CaptionColorNormal=255,255,230
+                        CaptionColorNormalA=255,255,230
+                        Font=Font.2SmallBold
+                        Help=Help.SFFTableClose
+                        ImageDown=GI,Bm.FormInfo3.ClearButD
+                        ImageNormal=GI,Bm.FormInfo3.ClearButN
+                        ImageNormalA=GI,Bm.FormInfo3.ClearButA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=SFFTableClose
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Close'),'form_name','GoodsShop');
+                        }
+                        Pos=878,642,-3
+                        Size=58,26
+                        Style=Style.GB.SoundNormal
+                    }
+                    Image ~{
+                        Image=GI,Bm.FHD_Stations.TableBackground
+                        MouseBlocking=True
+                        MouseBlockingTest=True
+                        Name=SFFTableBackground
+                        Pos=0,0,0
+                        Size=960,680
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Ranger
+                        Name=SFFTitle
+                        Pos=20,8,-2
+                        Size=920,30
+                        Text=ПОИСК КОСМИЧЕСКИХ СТАНЦИЙ
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFTypeStatus
+                        Pos=24,44,-2
+                        Size=560,25
+                        Text=Тип станции: -
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Right
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFFoundStatus
+                        Pos=610,44,-2
+                        Size=320,25
+                        Text=Найдено: 0 станций
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFHeaderSystem
+                        Pos=25,72,-2
+                        Size=430,20
+                        Text=СИСТЕМА
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFHeaderStation
+                        Pos=490,72,-2
+                        Size=445,20
+                        Text=СТАНЦИЯ
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFHeaderSector
+                        Pos=25,92,-2
+                        Size=430,20
+                        Text=СЕКТОР
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFHeaderRace
+                        Pos=490,92,-2
+                        Size=445,20
+                        Text=РАСА / ВЛАДЕЛЕЦ
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFHeaderLine
+                        Pos=20,108,-2
+                        Size=920,12
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow0System
+                        Pos=25,120,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow0Station
+                        Pos=490,120,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow0Sector
+                        Pos=25,138,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow0Race
+                        Pos=490,138,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine0
+                        Pos=20,162,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow1System
+                        Pos=25,168,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow1Station
+                        Pos=490,168,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow1Sector
+                        Pos=25,186,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow1Race
+                        Pos=490,186,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine1
+                        Pos=20,210,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow2System
+                        Pos=25,216,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow2Station
+                        Pos=490,216,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow2Sector
+                        Pos=25,234,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow2Race
+                        Pos=490,234,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine2
+                        Pos=20,258,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow3System
+                        Pos=25,264,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow3Station
+                        Pos=490,264,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow3Sector
+                        Pos=25,282,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow3Race
+                        Pos=490,282,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine3
+                        Pos=20,306,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow4System
+                        Pos=25,312,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow4Station
+                        Pos=490,312,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow4Sector
+                        Pos=25,330,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow4Race
+                        Pos=490,330,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine4
+                        Pos=20,354,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow5System
+                        Pos=25,360,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow5Station
+                        Pos=490,360,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow5Sector
+                        Pos=25,378,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow5Race
+                        Pos=490,378,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine5
+                        Pos=20,402,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow6System
+                        Pos=25,408,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow6Station
+                        Pos=490,408,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow6Sector
+                        Pos=25,426,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow6Race
+                        Pos=490,426,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine6
+                        Pos=20,450,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow7System
+                        Pos=25,456,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow7Station
+                        Pos=490,456,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow7Sector
+                        Pos=25,474,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow7Race
+                        Pos=490,474,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine7
+                        Pos=20,498,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow8System
+                        Pos=25,504,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow8Station
+                        Pos=490,504,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow8Sector
+                        Pos=25,522,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow8Race
+                        Pos=490,522,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine8
+                        Pos=20,546,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow9System
+                        Pos=25,552,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow9Station
+                        Pos=490,552,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow9Sector
+                        Pos=25,570,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow9Race
+                        Pos=490,570,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine9
+                        Pos=20,594,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFEmptyText
+                        Pos=40,260,-2
+                        Size=880,60
+                        TextColor=230,180,70
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFPageText
+                        Pos=450,638,-2
+                        Size=80,30
+                        Text=1 / 1
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        Active=False
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFStateType
+                        Pos=0,0
+                        Size=1,1
+                        Text=0
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        Active=False
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFStatePage
+                        Pos=0,0
+                        Size=1,1
+                        Text=0
+                        TextColor=255,255,230
+                    }
+                    Modal=True
+                    MouseBlocking=True
+                    Name=SFFTablePanel
+                    Pos=500,200,-250
+                    Size=960,680
+                    Style=Style.Window.2Normal
+                }
+            }
+        }
+    }
+    StarMap ^{
+        Panel ^{
+            FHDStationsSpaceButton ^{
+                Panel ^{
+                    GraphButton ^{
+                        Caption=
+                        CaptionAlignX=Center
+                        CaptionAlignY=CenterEx
+                        CaptionColorDown=255,255,230
+                        CaptionColorDownA=255,255,230
+                        CaptionColorNormal=255,255,230
+                        CaptionColorNormalA=255,255,230
+                        Font=Font.2SmallBold
+                        Help=Help.SFFOpen
+                        ImageDown=GI,Bm.FHD_Stations.2ShipD
+                        ImageNormal=GI,Bm.FHD_Stations.2ShipN
+                        ImageNormalA=GI,Bm.FHD_Stations.2ShipA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=FHDStationsSpaceButtonAction
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Open'),'form_name','StarMap');
+                        }
+                        Pos=0,0,-1
+                        Size=32,32
+                        Style=Style.GB.SoundNormal
+                    }
+                    Name=FHDStationsSpaceButton
+                    Pos=4,70,-100
+                    Size=32,32
+                }
+            }
+            FHDStationsTableContainer ^{
+                Window ^{
+                    Active=False
+                    GraphButton ^{
+                        Caption=НОВЫЙ ПОИСК
+                        CaptionAlignX=Center
+                        CaptionAlignY=CenterEx
+                        CaptionColorDown=255,255,230
+                        CaptionColorDownA=255,255,230
+                        CaptionColorNormal=255,255,230
+                        CaptionColorNormalA=255,255,230
+                        Font=Font.2SmallBold
+                        Help=Help.SFFNewSearch
+                        ImageDown=GI,Bm.FHD_Stations.2FindD
+                        ImageNormal=GI,Bm.FHD_Stations.2FindN
+                        ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=SFFNewSearch
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Open'),'form_name','StarMap');
+                        }
+                        Pos=22,642,-3
+                        Size=100,25
+                        Style=Style.GB.SoundNormal
+                    }
+                    GraphButton ^{
+                        Help=Help.SFFPageLeft
+                        ImageDown=GI,Bm.FormCount2.2SubD
+                        ImageNormal=GI,Bm.FormCount2.2SubN
+                        ImageNormalA=GI,Bm.FormCount2.2SubA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=SFFPageLeft
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.PageLeft'),'form_name','StarMap');
+                        }
+                        Pos=424,644,-3
+                        Size=21,21
+                        Style=Style.GB.SoundNormal
+                    }
+                    GraphButton ^{
+                        Help=Help.SFFPageRight
+                        ImageDown=GI,Bm.FormCount2.2AddD
+                        ImageNormal=GI,Bm.FormCount2.2AddN
+                        ImageNormalA=GI,Bm.FormCount2.2AddA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=SFFPageRight
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.PageRight'),'form_name','StarMap');
+                        }
+                        Pos=535,644,-3
+                        Size=21,21
+                        Style=Style.GB.SoundNormal
+                    }
+                    GraphButton ^{
+                        Caption=
+                        CaptionAlignX=Center
+                        CaptionAlignY=CenterEx
+                        CaptionColorDown=255,255,230
+                        CaptionColorDownA=255,255,230
+                        CaptionColorNormal=255,255,230
+                        CaptionColorNormalA=255,255,230
+                        Font=Font.2SmallBold
+                        Help=Help.SFFTableClose
+                        ImageDown=GI,Bm.FormCount2.2CloseD
+                        ImageNormal=GI,Bm.FormCount2.2CloseN
+                        ImageNormalA=GI,Bm.FormCount2.2CloseA
+                        Kind=Normal
+                        KindHit=Rect
+                        MouseBlocking=True
+                        MouseBlockingTest=False
+                        Name=SFFTableClose
+                        OnPressCode ~{
+                            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Close'),'form_name','StarMap');
+                        }
+                        Pos=878,642,-3
+                        Size=58,26
+                        Style=Style.GB.SoundNormal
+                    }
+                    Image ~{
+                        Image=GI,Bm.FHD_Stations.TableBackground
+                        MouseBlocking=True
+                        MouseBlockingTest=True
+                        Name=SFFTableBackground
+                        Pos=0,0,0
+                        Size=960,680
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Ranger
+                        Name=SFFTitle
+                        Pos=20,8,-2
+                        Size=920,30
+                        Text=ПОИСК КОСМИЧЕСКИХ СТАНЦИЙ
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFTypeStatus
+                        Pos=24,44,-2
+                        Size=560,25
+                        Text=Тип станции: -
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Right
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFFoundStatus
+                        Pos=610,44,-2
+                        Size=320,25
+                        Text=Найдено: 0 станций
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFHeaderSystem
+                        Pos=25,72,-2
+                        Size=430,20
+                        Text=СИСТЕМА
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFHeaderStation
+                        Pos=490,72,-2
+                        Size=445,20
+                        Text=СТАНЦИЯ
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFHeaderSector
+                        Pos=25,92,-2
+                        Size=430,20
+                        Text=СЕКТОР
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFHeaderRace
+                        Pos=490,92,-2
+                        Size=445,20
+                        Text=РАСА / ВЛАДЕЛЕЦ
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFHeaderLine
+                        Pos=20,108,-2
+                        Size=920,12
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow0System
+                        Pos=25,120,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow0Station
+                        Pos=490,120,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow0Sector
+                        Pos=25,138,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow0Race
+                        Pos=490,138,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine0
+                        Pos=20,162,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow1System
+                        Pos=25,168,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow1Station
+                        Pos=490,168,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow1Sector
+                        Pos=25,186,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow1Race
+                        Pos=490,186,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine1
+                        Pos=20,210,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow2System
+                        Pos=25,216,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow2Station
+                        Pos=490,216,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow2Sector
+                        Pos=25,234,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow2Race
+                        Pos=490,234,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine2
+                        Pos=20,258,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow3System
+                        Pos=25,264,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow3Station
+                        Pos=490,264,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow3Sector
+                        Pos=25,282,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow3Race
+                        Pos=490,282,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine3
+                        Pos=20,306,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow4System
+                        Pos=25,312,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow4Station
+                        Pos=490,312,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow4Sector
+                        Pos=25,330,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow4Race
+                        Pos=490,330,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine4
+                        Pos=20,354,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow5System
+                        Pos=25,360,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow5Station
+                        Pos=490,360,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow5Sector
+                        Pos=25,378,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow5Race
+                        Pos=490,378,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine5
+                        Pos=20,402,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow6System
+                        Pos=25,408,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow6Station
+                        Pos=490,408,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow6Sector
+                        Pos=25,426,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow6Race
+                        Pos=490,426,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine6
+                        Pos=20,450,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow7System
+                        Pos=25,456,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow7Station
+                        Pos=490,456,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow7Sector
+                        Pos=25,474,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow7Race
+                        Pos=490,474,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine7
+                        Pos=20,498,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow8System
+                        Pos=25,504,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow8Station
+                        Pos=490,504,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow8Sector
+                        Pos=25,522,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow8Race
+                        Pos=490,522,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine8
+                        Pos=20,546,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow9System
+                        Pos=25,552,-2
+                        Size=430,18
+                        TextColor=88,229,255
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFRow9Station
+                        Pos=490,552,-2
+                        Size=445,18
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow9Sector
+                        Pos=25,570,-2
+                        Size=430,20
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRow9Race
+                        Pos=490,570,-2
+                        Size=445,20
+                        TextColor=255,215,100
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFRowLine9
+                        Pos=20,594,-2
+                        Size=920,8
+                        Text=--------------------------------------------------------------------------------------------
+                        TextColor=70,110,125
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2SmallBold
+                        Name=SFFEmptyText
+                        Pos=40,260,-2
+                        Size=880,60
+                        TextColor=230,180,70
+                    }
+                    Label ~{
+                        AlignX=Center
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFPageText
+                        Pos=450,638,-2
+                        Size=80,30
+                        Text=1 / 1
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        Active=False
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFStateType
+                        Pos=0,0
+                        Size=1,1
+                        Text=0
+                        TextColor=255,255,230
+                    }
+                    Label ~{
+                        Active=False
+                        AlignX=Left
+                        AlignY=CenterEx
+                        Font=Font.2Small
+                        Name=SFFStatePage
+                        Pos=0,0
+                        Size=1,1
+                        Text=0
+                        TextColor=255,255,230
+                    }
+                    Modal=True
+                    MouseBlocking=True
+                    Name=SFFTablePanel
+                    Pos=500,200,-250
+                    Size=960,680
+                    Style=Style.Window.2Normal
+                }
+            }
+        }
+    }
+    FHDStationsLottery ^{
+        Border=0,0,1024,768
+        CodeBeforeRun ^{
+            01=int lotteryResX=GetGameOptions('ResolutionX');
+            02=int lotteryResY=GetGameOptions('ResolutionY');
+            03=CustomInterfaceSize('LotteryMainPanel',lotteryResX,lotteryResY);
+            04=CustomInterfaceSize('LotteryBackground',lotteryResX,lotteryResY);
+        }
+        CodeAfterRun ^{
+            01=int lotteryCoreAfter=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+            02=if(lotteryCoreAfter>=0 && ShipCustomShipInfoData(Player(),lotteryCoreAfter,1)==3)ShipCustomShipInfoData(Player(),lotteryCoreAfter,1,2);
+        }
+        Panel ^{
+            Image ^{
+                Image=GI,Bm.FHD_Stations.LotteryBackground
+                MouseBlocking=True
+                MouseBlockingTest=True
+                Name=LotteryBackground
+                Pos=0,0,99
+                Size=1024,768
+            }
+            Panel ^{
+                Window ^{
+                    Pos=0,0,10
+                    Size=700,302
+                    Style=Style.Window.2PQuestPar
+                }
+                Label ^{
+                    AlignX=Center
+                    AlignY=CenterEx
+                    Font=Font.2Ranger
+                    Name=LotteryTitle
+                    Pos=20,16,1
+                    Size=660,34
+                    Text=ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ
+                    TextColor=255,215,0
+                    TextShadow=1
+                    TextShadowColor=0,0,0
+                }
+                Label ^{
+                    AlignX=Center
+                    AlignY=CenterEx
+                    Font=Font.2NormalBold
+                    Name=LotteryPrompt
+                    Pos=20,54,1
+                    Size=660,36
+                    Text=Выберите число от 0 до 20. Участие бесплатное.
+                    TextColor=255,255,230
+                    TextShadow=1
+                    TextShadowColor=0,0,0
+                }
+                GraphButton ^{
+                    Caption=0
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber0
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',0);
+                        06=CloseCustomForm();
+                    }
+                    Pos=42,104,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=1
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber1
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',1);
+                        06=CloseCustomForm();
+                    }
+                    Pos=130,104,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=2
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber2
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',2);
+                        06=CloseCustomForm();
+                    }
+                    Pos=218,104,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=3
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber3
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',3);
+                        06=CloseCustomForm();
+                    }
+                    Pos=306,104,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=4
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber4
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',4);
+                        06=CloseCustomForm();
+                    }
+                    Pos=394,104,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=5
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber5
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',5);
+                        06=CloseCustomForm();
+                    }
+                    Pos=482,104,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=6
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber6
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',6);
+                        06=CloseCustomForm();
+                    }
+                    Pos=570,104,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=7
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber7
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',7);
+                        06=CloseCustomForm();
+                    }
+                    Pos=42,148,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=8
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber8
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',8);
+                        06=CloseCustomForm();
+                    }
+                    Pos=130,148,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=9
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber9
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',9);
+                        06=CloseCustomForm();
+                    }
+                    Pos=218,148,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=10
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber10
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',10);
+                        06=CloseCustomForm();
+                    }
+                    Pos=306,148,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=11
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber11
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',11);
+                        06=CloseCustomForm();
+                    }
+                    Pos=394,148,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=12
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber12
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',12);
+                        06=CloseCustomForm();
+                    }
+                    Pos=482,148,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=13
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber13
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',13);
+                        06=CloseCustomForm();
+                    }
+                    Pos=570,148,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=14
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber14
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',14);
+                        06=CloseCustomForm();
+                    }
+                    Pos=42,192,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=15
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber15
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',15);
+                        06=CloseCustomForm();
+                    }
+                    Pos=130,192,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=16
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber16
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',16);
+                        06=CloseCustomForm();
+                    }
+                    Pos=218,192,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=17
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber17
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',17);
+                        06=CloseCustomForm();
+                    }
+                    Pos=306,192,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=18
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber18
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',18);
+                        06=CloseCustomForm();
+                    }
+                    Pos=394,192,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=19
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber19
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',19);
+                        06=CloseCustomForm();
+                    }
+                    Pos=482,192,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=20
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2NormalBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryNumber20
+                    OnPressCode ^{
+                        01=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCore<0){CloseCustomForm();exit;}
+                        03=dword lotteryDock=GetShipRuins(Player());
+                        04=if(!lotteryDock){CloseCustomForm();exit;}
+                        05=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryPlay'),'dock',lotteryDock,'player_number',20);
+                        06=CloseCustomForm();
+                    }
+                    Pos=570,192,1
+                    Size=80,32
+                    Style=Style.GB.SoundNormal
+                }
+                GraphButton ^{
+                    Caption=ОТКАЗАТЬСЯ
+                    CaptionAlignX=Center
+                    CaptionAlignY=CenterEx
+                    CaptionColorDown=255,255,230
+                    CaptionColorDownA=255,255,230
+                    CaptionColorNormal=255,255,230
+                    CaptionColorNormalA=255,255,230
+                    Font=Font.2SmallBold
+                    ImageDown=GI,Bm.FHD_Stations.2FindD
+                    ImageNormal=GI,Bm.FHD_Stations.2FindN
+                    ImageNormalA=GI,Bm.FHD_Stations.2FindA
+                    Kind=Normal
+                    KindHit=Rect
+                    MouseBlocking=True
+                    Name=LotteryRefuse
+                    OnPressCode ^{
+                        01=int lotteryCoreRefuse=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+                        02=if(lotteryCoreRefuse>=0)ShipCustomShipInfoData(Player(),lotteryCoreRefuse,1,2);
+                        03=CloseCustomForm();
+                    }
+                    Pos=270,250,1
+                    Size=160,32
+                    Style=Style.GB.SoundNormal
+                }
+                Name=LotteryChoicePanel
+                OnKey ^{
+                    01=if(KEY==27)CloseCustomForm(1);
+                }
+                Pos=162,233,1
+                PosAutoCorrection=True
+                PosAutoCorrectionXCoef=0.5
+                PosAutoCorrectionYCoef=0.5
+                Size=700,302
+            }
+            Name=LotteryMainPanel
+            Pos=0,0
+            Size=1024,768
+        }
+    }
+}
+Data ^{
+    ScriptLibs ^{
+        FHDStationsLotteryNative ^{
+            Path=Mods\FHD_MODS\FHD_LOTOStations\Data\FHDStationsLotteryNative.dll
+            LotteryNumber=int,LotteryNumber
+            LotteryHasRecord=int,LotteryHasRecord,int,int,int
+            LotteryGetField=int,LotteryGetField,int,int,int,int
+            LotteryCommit=int,LotteryCommit,int,int,int,int,int,int,int,int,int,int
+        }
+    }
+}
+BV ^{
+    OnStart ^{
+        0DayScripts ^{
+            90_FHDStationsLottery=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryEnsure'));
+        }
+    }
+    OnLoad ^{
+        90_FHDStationsLottery ^{
+            01=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryEnsure'));
+        }
+    }
+}

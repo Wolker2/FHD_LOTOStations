@@ -1,0 +1,30 @@
+Name=FHD_LOTOStations
+Section=FHD_MODS
+Author=Prolog_D
+Dependence=
+Conflict=EvoFreeInflation,EvoNoInflation
+Priority=2
+Languages=Rus
+SmallDescription=<color=0,132,15>Поиск Космических Станций + Лотерея</color>
+SmallDescription=<color=255,215,0>ver.4.8 FINAL</color>
+SmallDescription=Поиск станций во всех открытых секторах и полугодовая галактическая лотерея.
+SmallDescription=(Установка: Mods\FHD_MODS\FHD_LOTOStations)
+FullDescription=Позволяет найти станции выбранного типа с указанием системы, сектора, станции и расы владельца. Для пиратских станций дополнительно указывается раса экипажа.
+FullDescription=<color=0,132,15>Лотерея:</color> раз в 182 игровых дня на 60 дней выбирается одна случайная станция. Участие бесплатное и разрешена только одна попытка за розыгрыш.
+FullDescription=<color=0,132,15>Защита:</color> результат фиксируется во внешнем журнале до выдачи приза; загрузка старого SAV не позволяет переиграть число и восстанавливает уже выигранный приз.
+FullDescription=<color=0,132,15>Награды:</color> отдельные таблицы по стороне и фактическому званию. Точное совпадение даёт деньги и на высших званиях дополнительный шанс корпуса; + - 1 — оборудование; + - 2 — микромодуль или артефакт согласно званию.
+FullDescription=<color=0,132,15>Баланс:</color> обычное оборудование имеет случайную расу и тип, ЧД-оборудование остаётся ЧД; вес базового/обычного/среднего от 10 до 100 т., хорошего и выше от 10 до 40 т. Оборудование и микромодули ограничены текущим ГТУ; артефакты от ГТУ не зависят.
+FullDescription=<color=0,132,15>(Легален)</color>
+SmallDescription=------------------------------------  <color=0,200,255>ENG</color>  ----------------------------------------
+FullDescription= ------------------------------------  <color=0,200,255>ENG</color>  ----------------------------------------
+Languages=Eng
+SmallDescription=<color=0,132,15>Space Station Search + Lottery</color>
+SmallDescription=<color=255,215,0>ver.4.8 FINAL</color>
+SmallDescription=Search for stations in all discovered sectors and a semi-annual galactic lottery.
+SmallDescription=(Installation: Mods\FHD_MODS\FHD_LOTOStations)
+FullDescription=Allows you to find stations of the selected type, indicating the system, sector, station name, and the owner's race. For pirate stations, the crew's race is additionally specified.
+FullDescription=<color=0,132,15>Lottery:</color> once every 182 game days, one random station is selected for 60 days. Participation is free and only one attempt is allowed per draw.
+FullDescription=<color=0,132,15>Protection:</color> the result is recorded in an external log before the prize is issued; loading an old SAV does not allow you to reroll the number and will restore the already won prize.
+FullDescription=<color=0,132,15>Rewards:</color> separate tables based on faction and actual rank. An exact match grants money and, at higher ranks, an additional chance for a hull; + - 1 grants equipment; + - 2 grants a micromodule or artifact according to rank.
+FullDescription=<color=0,132,15>Balance:</color> standard equipment has a random race and type, BH (Black Hole) equipment remains BH; the weight of basic/common/average is from 10 to 100 t., good and higher is from 10 to 40 t. Equipment and micromodules are limited by the current GTL (Galactic Tech Level); artifacts do not depend on the GTL.
+FullDescription=<color=0,132,15>(Legal)</color>

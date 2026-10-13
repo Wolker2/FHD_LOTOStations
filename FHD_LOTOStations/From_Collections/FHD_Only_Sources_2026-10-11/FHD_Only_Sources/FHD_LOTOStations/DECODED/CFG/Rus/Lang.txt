@@ -1,0 +1,1223 @@
+Help ~{
+    SFFNewSearch=Выбрать другой тип станции
+    SFFOpen=Открыть Поиск Космических Станций
+    SFFPageLeft=Предыдущая страница
+    SFFPageRight=Следующая страница
+    SFFTableClose=Закрыть Поиск Космических Станций
+}
+Script ^{
+    StationFinder ^{
+        BuildRows ^{
+            01=unknown rows=newarray(1);
+            02=unknown sortKeys=newarray(1);
+            03=int i=0;
+            04=int j=0;
+            05=dword star=0;
+            06=dword station=0;
+            07=int owner=0;
+            08=int pilotRace=0;
+            09=str ownerText='';
+            10=str packedRow='';
+            11=for(i=0;i<GalaxyStars();i=i+1)
+            12 ^{
+                01=star=GalaxyStar(i);
+                02=if(!star)continue;
+                03=if(!SectorVisible(StarToCon(star)))continue;
+                04=for(j=0;j<StarRuins(star);j=j+1)
+                05 ~{
+                    01=station=StarRuins(star,j);
+                    02=if(!station)continue;
+                    03=if(ShipType(station)!=station_type)continue;
+                    04=owner=ShipOwner(station);
+                    05=pilotRace=ShipPilotRace(station);
+                    06=ownerText=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.ResolveRace'),'owner',owner,'pilot_race',pilotRace,'result');
+                    07=packedRow=StarName(star)+'$'+ConName(StarToCon(star))+'$'+Name(station)+'$'+ownerText+'$'+Id(star)+'$'+Id(station);
+                    08=ArrayAdd(rows,packedRow);
+                    09=ArrayAdd(sortKeys,StarName(star)+' '+Name(station));
+                }
+            }
+            13=ArrayDelete(rows,0);
+            14=ArrayDelete(sortKeys,0);
+            15=if(ArrayDim(rows)>1)ArraySort(sortKeys,rows);
+            16=free(sortKeys);
+        }
+        Close ~{
+            01=InterfaceState(form_name,'SFFTablePanel',0);
+        }
+        Field ^{
+            01=str rest=packed;
+            02=str result='';
+            03=int part=0;
+            04=int separator=-1;
+            05=for(part=0;part<=field_index;part=part+1)
+            06 ^{
+                01=separator=findsubstr(rest,'$');
+                02=if(part==field_index)
+                03 ~{
+                    01=if(separator<0)result=rest;
+                    02=else result=substr(rest,0,separator);
+                }
+                04=if(separator<0)rest='';
+                05=else rest=substr(rest,separator+1);
+            }
+        }
+        LotteryDockCheck ^{
+            01=int lotteryDockStatus=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1);
+            02=if(lotteryDockStatus!=1)exit;
+            03=int lotteryDockEnd=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',3);
+            04=if(CurTurn()>lotteryDockEnd)exit;
+            05=int lotteryDockTargetId=0+ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',3);
+            06=if(!lotteryDockTargetId)exit;
+            07=dword lotteryDockStation=GetShipRuins(Player());
+            08=if(!lotteryDockStation)exit;
+            09=if(Id(lotteryDockStation)!=lotteryDockTargetId)exit;
+            10=int lotteryDockStart=lotteryDockEnd-59;
+            11=int lotteryDockPlayerId=Id(Player());
+            12=unknown LotteryHasRecord=ImportedFunction('FHDStationsLotteryNative','LotteryHasRecord');
+            13=if(LotteryHasRecord(lotteryDockStart,lotteryDockTargetId,lotteryDockPlayerId))
+            14 ^{
+                01=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryRestoreExternal'));
+                02=exit;
+            }
+            15=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1,3);
+            16=OpenCustomForm('FHDStationsLottery');
+        }
+        LotteryEnsure ~{
+            01=int coreInfo=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+            02=if(coreInfo>=0)exit;
+            03=ShipAddCustomShipInfo(Player(),'FHDStationsLotteryCore','NoShow',0,CurTurn(),0,'','','');
+        }
+        LotteryPlay ^{
+            01=int playerNumber=player_number;
+            02=int lotteryPlayEnd=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',3);
+            03=int lotteryPlayStart=lotteryPlayEnd-59;
+            04=int lotteryPlayStationId=0+ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',3);
+            05=int lotteryPlayPlayerId=Id(Player());
+            06=unknown LotteryHasRecord=ImportedFunction('FHDStationsLotteryNative','LotteryHasRecord');
+            07=if(LotteryHasRecord(lotteryPlayStart,lotteryPlayStationId,lotteryPlayPlayerId))
+            08 ^{
+                01=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryRestoreExternal'));
+                02=exit;
+            }
+            09=unknown LotteryNumber=ImportedFunction('FHDStationsLotteryNative','LotteryNumber');
+            10=int winningNumber=LotteryNumber();
+            100=if(prizeType==1)
+            101 ^{
+                01=ShipMoney(Player(),ShipMoney(Player())+prizeP1);
+                02=if(!difference)
+                03 ^{
+                    01=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n'+profileText+'\nВаше число: '+playerNumber+'\nВыигрышное число: '+winningNumber+'\n\n★ ТОЧНОЕ СОВПАДЕНИЕ! ★\nВы выиграли '+prizeP1+' кредитов.',10);
+                    02=if(shipChance>0)MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\nДОПОЛНИТЕЛЬНЫЙ РОЗЫГРЫШ КОРАБЛЯ\n\nШанс: '+shipChance+'%.\nПобедный диапазон: 1–'+shipChance+'.\nВыпало: '+shipChanceRoll+'.\n\nКорабль не выигран.',10);
+                }
+                04=else if(difference==1)MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n'+profileText+'\nВаше число: '+playerNumber+'\nВыигрышное число: '+winningNumber+'\n\nОборудование создать не удалось. Выдано '+prizeP1+' кредитов.',10);
+                05=else MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n'+profileText+'\nВаше число: '+playerNumber+'\nВыигрышное число: '+winningNumber+'\n\nПриз создать не удалось. Выдано '+prizeP1+' кредитов.',10);
+                06=exit;
+            }
+            102=if(prizeType==2)
+            103 ^{
+                01=AddItemToShip(Player(),pendingPrize);
+                02=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n'+profileText+'\nВаше число: '+playerNumber+'\nВыигрышное число: '+winningNumber+'\n\nРазница ±1.\nПризовая категория: '+prizeCategory+'\nИсточник: '+prizeSource+'\nТехнологический уровень: '+prizeP3+' / ГТУ '+galaxyTech+'\nВес: '+prizeP2+' т.\n\n'+ItemFullName(pendingPrize),10);
+                03=exit;
+            }
+            104=if(prizeType==3)
+            105 ^{
+                01=AddItemToShip(Player(),pendingPrize);
+                02=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n'+profileText+'\nВаше число: '+playerNumber+'\nВыигрышное число: '+winningNumber+'\n\nРазница ±2.\nПризовая категория: '+prizeCategory+'\nМикромодуль выбран случайно из допустимых при текущем ГТУ.\n\n'+ItemFullName(pendingPrize),10);
+                03=exit;
+            }
+            106=if(prizeType==4)
+            107 ^{
+                01=ShipMoney(Player(),ShipMoney(Player())+prizeP1);
+                02=AddItemToStorage(dock,pendingPrize);
+                03=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n'+profileText+'\nВаше число: '+playerNumber+'\nВыигрышное число: '+winningNumber+'\n\n★ ТОЧНОЕ СОВПАДЕНИЕ! ★\nВы выиграли '+prizeP1+' кредитов.',10);
+                04=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n★ ДОПОЛНИТЕЛЬНЫЙ РОЗЫГРЫШ КОРАБЛЯ — ВЫИГРЫШ! ★\n\nШанс: '+shipChance+'%. Победный диапазон: 1–'+shipChance+'. Выпало: '+shipChanceRoll+'.\nКачество корпуса: '+hullQualityName+'.\n\n'+ItemFullName(pendingPrize)+'\nКорпус помещён на склад станции.',10);
+                05=exit;
+            }
+            108=if(prizeType==5)
+            109 ^{
+                01=AddItemToShip(Player(),pendingPrize);
+                02=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n'+profileText+'\nВаше число: '+playerNumber+'\nВыигрышное число: '+winningNumber+'\n\nРазница ±2.\nПризовая категория: '+prizeCategory+'\nФактически выпало: '+prizeSource+'\nАртефакты не ограничены текущим ГТУ.\n\n'+ItemFullName(pendingPrize),10);
+                03=exit;
+            }
+            11=int difference=playerNumber-winningNumber;
+            12=if(difference<0)difference=0-difference;
+            13=if(difference>10)difference=21-difference;
+            14=int prizeType=0;
+            15=int prizeP1=0;
+            16=int prizeP2=0;
+            17=int prizeP3=0;
+            18=int prizeP4=0;
+            19=dword pendingPrize=0;
+            20=int isPirate=ShipInPirateClan(Player());
+            21=int lotteryRank=ShipRank(Player());
+            22=if(isPirate)lotteryRank=GetShipPirateRank(Player());
+            23=if(lotteryRank<0)lotteryRank=0;
+            24=if(lotteryRank>7)lotteryRank=7;
+            25=unknown coalitionMoney=newarray(8);
+            26=coalitionMoney[0]=100000;
+            27=coalitionMoney[1]=110000;
+            28=coalitionMoney[2]=120000;
+            29=coalitionMoney[3]=130000;
+            30=coalitionMoney[4]=140000;
+            31=coalitionMoney[5]=150000;
+            32=coalitionMoney[6]=175000;
+            33=coalitionMoney[7]=200000;
+            34=unknown pirateMoney=newarray(8);
+            35=pirateMoney[0]=75000;
+            36=pirateMoney[1]=85000;
+            37=pirateMoney[2]=105000;
+            38=pirateMoney[3]=140000;
+            39=pirateMoney[4]=180000;
+            40=pirateMoney[5]=250000;
+            41=pirateMoney[6]=275000;
+            42=pirateMoney[7]=300000;
+            43=int exactMoney=coalitionMoney[lotteryRank];
+            44=if(isPirate)exactMoney=pirateMoney[lotteryRank];
+            45=free(coalitionMoney);
+            46=free(pirateMoney);
+            47=unknown coalitionRanks=newarray(8);
+            48=coalitionRanks[0]='Новичок';
+            49=coalitionRanks[1]='Кадет';
+            50=coalitionRanks[2]='Пилот';
+            51=coalitionRanks[3]='Капитан';
+            52=coalitionRanks[4]='Истребитель';
+            53=coalitionRanks[5]='Ас';
+            54=coalitionRanks[6]='Командор';
+            55=coalitionRanks[7]='Адмирал';
+            56=unknown pirateRanks=newarray(8);
+            57=pirateRanks[0]='Салага';
+            58=pirateRanks[1]='Юнга';
+            59=pirateRanks[2]='Рейдер';
+            60=pirateRanks[3]='Шкипер';
+            61=pirateRanks[4]='Головорез';
+            62=pirateRanks[5]='Атаман';
+            63=pirateRanks[6]='Хан';
+            64=pirateRanks[7]='Барон';
+            65=str lotteryFaction='Коалиция';
+            66=str lotteryRankName=coalitionRanks[lotteryRank];
+            67=if(isPirate){lotteryFaction='Пираты';lotteryRankName=pirateRanks[lotteryRank];}
+            68=free(coalitionRanks);
+            69=free(pirateRanks);
+            70=int galaxyTech=GalaxyTechLevel();
+            71=str prizeCategory='';
+            72=str prizeSource='';
+            73=int shipChance=0;
+            74=int shipGoodChance=25;
+            75=int shipRareChance=0;
+            76=int shipChanceRoll=0;
+            77=str hullQualityName='обычный';
+            78=if(!isPirate && lotteryRank==5){shipChance=5;shipRareChance=6;}
+            79=else if(!isPirate && lotteryRank==6){shipChance=10;shipRareChance=7;}
+            80=else if(!isPirate && lotteryRank==7){shipChance=15;shipRareChance=8;}
+            81=else if(isPirate && lotteryRank==5){shipChance=8;shipGoodChance=30;shipRareChance=6;}
+            82=else if(isPirate && lotteryRank==6){shipChance=15;shipGoodChance=30;shipRareChance=7;}
+            83=else if(isPirate && lotteryRank==7){shipChance=20;shipGoodChance=30;shipRareChance=8;}
+            84=if(!difference)
+            85 ^{
+                01=prizeType=1;
+                02=prizeP1=exactMoney;
+                03=if(shipChance>0)shipChanceRoll=Rnd(1,100);
+                04=if(shipChance>0 && shipChanceRoll<=shipChance)
+                05 ^{
+                    01=int hullQualityRoll=Rnd(1,100);
+                    02=int hullQuality=0;
+                    03=int hullOrdinaryChance=100-shipGoodChance-shipRareChance;
+                    04=if(hullQualityRoll>hullOrdinaryChance)hullQuality=1;
+                    05=if(hullQualityRoll>hullOrdinaryChance+shipGoodChance)hullQuality=2;
+                    06=if(hullQuality==1)hullQualityName='хороший';else if(hullQuality==2)hullQualityName='редкий';
+                    07=int hullSize=100+80*galaxyTech;
+                    08=if(hullQuality==1)hullSize=100+110*galaxyTech;
+                    09=else if(hullQuality==2)hullSize=100+140*galaxyTech;
+                    10=if(hullSize>1300)hullSize=1300;
+                    11=int hullOwner=ShipOwner(Player());
+                    12=if(hullOwner<0 || hullOwner>4)hullOwner=Rnd(0,4);
+                    13=pendingPrize=CreateHull(2,hullSize,galaxyTech,hullOwner);
+                    14=if(pendingPrize)
+                    15 ^{
+                        01=prizeType=4;
+                        02=prizeP1=exactMoney;
+                        03=prizeP2=hullSize;
+                        04=prizeP3=galaxyTech;
+                        05=prizeP4=hullOwner;
+                    }
+                }
+            }
+            86=else if(difference==1)
+            87 ^{
+                01=int equipmentRoll=Rnd(1,100);
+                02=int equipmentQualityStep=0;
+                03=if(equipmentRoll>60)equipmentQualityStep=1;
+                04=if(equipmentRoll>85)equipmentQualityStep=2;
+                05=if(equipmentRoll>95)equipmentQualityStep=3;
+                06=int equipmentClass=0;
+                07=prizeCategory='базовое оборудование';
+                08=int equipmentFromBH=0;
+                09=int equipmentCombatChance=0;
+                10=if(!isPirate)
+                11 ^{
+                    01=if(lotteryRank==1)
+                    02 ^{
+                        01=equipmentClass=0;
+                        02=prizeCategory='базовое оборудование';
+                        03=if(equipmentRoll>60){equipmentClass=1;prizeCategory='обычное оборудование';}
+                    }
+                    03=else if(lotteryRank==2){equipmentClass=1;prizeCategory='обычное оборудование';}
+                    04=else if(lotteryRank==3){equipmentClass=2;prizeCategory='оборудование среднего уровня';}
+                    05=else if(lotteryRank==4){equipmentClass=3;prizeCategory='хорошее оборудование из ЧД';equipmentFromBH=1;}
+                    06=else if(lotteryRank==5){equipmentClass=3;prizeCategory='хорошее оборудование из ЧД';equipmentFromBH=1;}
+                    07=else if(lotteryRank==6){equipmentClass=4;prizeCategory='очень хорошее оборудование из ЧД';equipmentFromBH=1;}
+                    08=else if(lotteryRank==7){equipmentClass=5;prizeCategory='редкое оборудование из ЧД';equipmentFromBH=1;}
+                }
+                12=else
+                13 ^{
+                    01=equipmentFromBH=1;
+                    02=prizeCategory='базовое оборудование из ЧД';
+                    03=if(lotteryRank==1){equipmentClass=1;prizeCategory='обычное оборудование из ЧД';}
+                    04=else if(lotteryRank==2){equipmentClass=1;prizeCategory='обычное/боевое оборудование из ЧД';equipmentCombatChance=60;}
+                    05=else if(lotteryRank==3){equipmentClass=2;prizeCategory='оборудование среднего уровня из ЧД';}
+                    06=else if(lotteryRank==4){equipmentClass=3;prizeCategory='хорошее боевое оборудование из ЧД';equipmentCombatChance=75;}
+                    07=else if(lotteryRank==5)
+                    08 ^{
+                        01=equipmentClass=3;
+                        02=prizeCategory='хорошее оборудование из ЧД';
+                        03=if(equipmentRoll>85){equipmentClass=5;prizeCategory='редкое оборудование из ЧД';}
+                        04=equipmentCombatChance=45;
+                    }
+                    09=else if(lotteryRank==6){equipmentClass=5;prizeCategory='редкое оборудование из ЧД';equipmentCombatChance=50;}
+                    10=else if(lotteryRank==7){equipmentClass=6;prizeCategory='очень редкое оборудование из ЧД';equipmentCombatChance=55;}
+                }
+                14=int equipmentMinTech=1;
+                15=int equipmentMaxTech=max(1,galaxyTech-3);
+                16=if(equipmentClass==1){equipmentMaxTech=max(1,galaxyTech-2);equipmentMinTech=max(1,equipmentMaxTech-1);}
+                17=else if(equipmentClass==2){equipmentMaxTech=max(1,galaxyTech-1);equipmentMinTech=max(1,equipmentMaxTech-1);}
+                18=else if(equipmentClass==3){equipmentMaxTech=galaxyTech;equipmentMinTech=max(1,galaxyTech-2);}
+                19=else if(equipmentClass==4){equipmentMaxTech=galaxyTech;equipmentMinTech=max(1,galaxyTech-1);}
+                20=else if(equipmentClass>=5){equipmentMaxTech=galaxyTech;equipmentMinTech=galaxyTech;}
+                21=if(equipmentMaxTech>galaxyTech)equipmentMaxTech=galaxyTech;
+                22=if(equipmentMinTech>equipmentMaxTech)equipmentMinTech=equipmentMaxTech;
+                23=int equipmentTech=equipmentMinTech;
+                24=int equipmentTechSpan=equipmentMaxTech-equipmentMinTech;
+                25=if(equipmentQualityStep==1)equipmentTech=equipmentMinTech+(equipmentTechSpan+2)/3;
+                26=else if(equipmentQualityStep==2)equipmentTech=equipmentMinTech+(2*equipmentTechSpan+2)/3;
+                27=else if(equipmentQualityStep==3)equipmentTech=equipmentMaxTech;
+                28=if(equipmentTech>galaxyTech)equipmentTech=galaxyTech;
+                29=int equipmentType=Rnd(t_FuelTanks,t_DefGenerator);
+                30=if(equipmentCombatChance>0 && Rnd(1,100)<=equipmentCombatChance)equipmentType=Rnd(t_Weapon1,t_Weapon18);
+                31=int equipmentSize=Rnd(10,100);
+                32=if(equipmentClass>=3)equipmentSize=Rnd(10,40);
+                33=int equipmentOwner=Rnd(0,4);
+                34=prizeSource='случайная раса Коалиции';
+                35=if(equipmentFromBH){equipmentOwner=6;prizeSource='ЧД';}
+                36=pendingPrize=CreateEquipment(equipmentType,equipmentSize,equipmentTech,equipmentOwner);
+                37=if(pendingPrize)
+                38 ^{
+                    01=prizeType=2;
+                    02=prizeP1=equipmentType;
+                    03=prizeP2=equipmentSize;
+                    04=prizeP3=equipmentTech;
+                    05=prizeP4=equipmentOwner;
+                }
+                39=else
+                40 ^{
+                    01=prizeType=1;
+                    02=prizeP1=50000;
+                }
+            }
+            88=else if(difference==2)
+            89 ^{
+                01=int artifactMode=0;
+                02=int artifactBHChance=0;
+                03=prizeCategory='базовый модуль';
+                04=int moduleCategory=0;
+                05=if(!isPirate)
+                06 ^{
+                    01=if(lotteryRank==1)
+                    02 ^{
+                        01=prizeCategory='базовый/обычный модуль';
+                        02=moduleCategory=0;
+                        03=if(Rnd(1,100)>58)moduleCategory=1;
+                    }
+                    03=else if(lotteryRank==2)
+                    04 ^{
+                        01=prizeCategory='обычный модуль';
+                        02=moduleCategory=1;
+                        03=if(Rnd(1,100)<=4){moduleCategory=2;prizeCategory='средний модуль — сработал бонус Пилота +4%';}
+                    }
+                    05=else if(lotteryRank==3)
+                    06 ^{
+                        01=prizeCategory='модуль среднего уровня';
+                        02=moduleCategory=2;
+                        03=if(Rnd(1,100)<=6){moduleCategory=3;prizeCategory='хороший модуль — сработал бонус Капитана +6%';}
+                    }
+                    07=else if(lotteryRank==4){artifactMode=1;artifactBHChance=4;prizeCategory='артефакт любой расы (+4% шанс артефакта из ЧД)';}
+                    08=else if(lotteryRank==5){artifactMode=1;artifactBHChance=6;prizeCategory='артефакт любой расы (+6% шанс артефакта из ЧД)';}
+                    09=else if(lotteryRank==6){artifactMode=2;artifactBHChance=8;prizeCategory='артефакт гаальцев / ЧД (+8% шанс ЧД)';}
+                    10=else if(lotteryRank==7){artifactMode=3;prizeCategory='артефакт из ЧД';}
+                }
+                07=else
+                08 ^{
+                    01=if(lotteryRank==1)
+                    02 ^{
+                        01=prizeCategory='базовый/обычный модуль';
+                        02=moduleCategory=0;
+                        03=if(Rnd(1,100)>60)moduleCategory=1;
+                    }
+                    03=else if(lotteryRank==2){moduleCategory=1;prizeCategory='обычный модуль';}
+                    04=else if(lotteryRank==3)
+                    05 ^{
+                        01=moduleCategory=2;
+                        02=prizeCategory='модуль среднего уровня';
+                        03=if(Rnd(1,100)<=2){artifactMode=1;prizeCategory='артефакт любой расы — сработал бонус Шкипера 2%';}
+                    }
+                    06=else if(lotteryRank==4)
+                    07 ^{
+                        01=moduleCategory=3;
+                        02=prizeCategory='хороший модуль';
+                        03=if(Rnd(1,100)<=4){artifactMode=1;prizeCategory='артефакт любой расы — сработал бонус Головореза 4%';}
+                    }
+                    08=else if(lotteryRank==5)
+                    09 ^{
+                        01=prizeCategory='хороший/редкий модуль';
+                        02=moduleCategory=3;
+                        03=if(Rnd(1,100)>60)moduleCategory=4;
+                        04=if(Rnd(1,100)<=5){artifactMode=1;prizeCategory='артефакт любой расы — сработал бонус Атамана 5%';}
+                    }
+                    10=else if(lotteryRank==6)
+                    11 ^{
+                        01=moduleCategory=4;
+                        02=prizeCategory='редкий модуль';
+                        03=if(Rnd(1,100)<=7){artifactMode=3;prizeCategory='артефакт из ЧД — сработал бонус Хана 7%';}
+                    }
+                    12=else if(lotteryRank==7){artifactMode=3;prizeCategory='артефакт из ЧД';}
+                }
+                09=if(artifactMode>0)
+                10 ^{
+                    01=int artRoll=Rnd(0,3);
+                    02=int artType=t_ArtefactSpeed;
+                    03=if(artRoll==1)artType=t_ArtefactNano;
+                    04=else if(artRoll==2)artType=t_ArtefactDef;
+                    05=else if(artRoll==3)artType=t_ArtefactPower;
+                    06=int artOwner=Rnd(0,4);
+                    07=prizeSource='артефакт случайной расы';
+                    08=if(artifactMode==2){artOwner=4;prizeSource='гаальский артефакт';}
+                    09=else if(artifactMode==3){artOwner=6;prizeSource='артефакт из ЧД';}
+                    10=if(artifactMode<3 && artifactBHChance>0 && Rnd(1,100)<=artifactBHChance){artOwner=6;prizeSource='артефакт из ЧД — сработал бонус звания';}
+                    11=pendingPrize=CreateArt(artType,artOwner);
+                    12=if(pendingPrize){prizeType=5;prizeP1=artType;prizeP2=artOwner;}
+                }
+                11=if(!pendingPrize)
+                12 ^{
+                    01=int moduleMax=29+10*galaxyTech;
+                    02=if(moduleMax>100)moduleMax=100;
+                    03=if(moduleMax<34)moduleMax=34;
+                    04=int moduleRange=moduleMax-30;
+                    05=int moduleQ1=30+(moduleRange+3)/4;
+                    06=int moduleQ2=30+(moduleRange+1)/2;
+                    07=int moduleQ3=30+(3*moduleRange+3)/4;
+                    08=int moduleCatMin=31;
+                    09=int moduleCatHigh=moduleQ1;
+                    10=if(moduleCategory==1){moduleCatMin=moduleQ1+1;moduleCatHigh=moduleQ2;}
+                    11=else if(moduleCategory==2){moduleCatMin=moduleQ2+1;moduleCatHigh=moduleQ3;}
+                    12=else if(moduleCategory==3){moduleCatMin=moduleQ3+1;moduleCatHigh=moduleMax;}
+                    13=else if(moduleCategory>=4){moduleCatMin=(moduleQ3+1+moduleMax)/2;moduleCatHigh=moduleMax;}
+                    14=if(moduleCatMin<31)moduleCatMin=31;
+                    15=if(moduleCatHigh<moduleCatMin)moduleCatHigh=moduleCatMin;
+                    16=int moduleQualityRoll=Rnd(1,100);
+                    17=int moduleQualityStep=0;
+                    18=if(moduleQualityRoll>60)moduleQualityStep=1;
+                    19=if(moduleQualityRoll>85)moduleQualityStep=2;
+                    20=if(moduleQualityRoll>95)moduleQualityStep=3;
+                    21=int moduleLen=moduleCatHigh-moduleCatMin+1;
+                    22=int moduleS1=moduleCatMin+(moduleLen+3)/4-1;
+                    23=int moduleS2=moduleCatMin+(moduleLen+1)/2-1;
+                    24=int moduleS3=moduleCatMin+(3*moduleLen+3)/4-1;
+                    25=if(moduleS1>moduleCatHigh)moduleS1=moduleCatHigh;
+                    26=if(moduleS2>moduleCatHigh)moduleS2=moduleCatHigh;
+                    27=if(moduleS3>moduleCatHigh)moduleS3=moduleCatHigh;
+                    28=int moduleMin=moduleCatMin;
+                    29=int moduleHigh=moduleS1;
+                    30=if(moduleQualityStep==1){moduleMin=min(moduleS1+1,moduleCatHigh);moduleHigh=max(moduleMin,moduleS2);}
+                    31=else if(moduleQualityStep==2){moduleMin=min(moduleS2+1,moduleCatHigh);moduleHigh=max(moduleMin,moduleS3);}
+                    32=else if(moduleQualityStep==3){moduleMin=min(moduleS3+1,moduleCatHigh);moduleHigh=moduleCatHigh;}
+                    33=unknown moduleList=newarray(1);
+                    34=BuildListOfMMByPriority(moduleList,moduleMin,moduleHigh);
+                    35=if(!ArrayDim(moduleList))BuildListOfMMByPriority(moduleList,moduleCatMin,moduleCatHigh);
+                    36=if(!ArrayDim(moduleList))BuildListOfMMByPriority(moduleList,31,moduleMax);
+                    37=if(ArrayDim(moduleList))
+                    38 ^{
+                        01=ArrayRandomize(50,moduleList);
+                        02=int moduleBonus=moduleList[Rnd(0,ArrayDim(moduleList)-1)];
+                        03=pendingPrize=CreateMM(moduleBonus);
+                        04=if(pendingPrize){prizeType=3;prizeP1=moduleBonus;}
+                    }
+                    39=free(moduleList);
+                }
+                13=if(!pendingPrize && prizeType==0){prizeType=1;prizeP1=25000;}
+            }
+            90=unknown LotteryCommit=ImportedFunction('FHDStationsLotteryNative','LotteryCommit');
+            91=int lotteryCommitResult=LotteryCommit(lotteryPlayStart,lotteryPlayStationId,lotteryPlayPlayerId,playerNumber,winningNumber,prizeType,prizeP1,prizeP2,prizeP3,prizeP4);
+            92=if(lotteryCommitResult==2)
+            93 ^{
+                01=if(pendingPrize)FreeItem(pendingPrize);
+                02=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryRestoreExternal'));
+                03=exit;
+            }
+            94=if(lotteryCommitResult!=1)
+            95 ^{
+                01=if(pendingPrize)FreeItem(pendingPrize);
+                02=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1,1);
+                03=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\nНе удалось зарегистрировать результат во внешнем журнале защиты. Розыгрыш отменён, попытка не списана. Попробуйте прилететь на станцию ещё раз.',10);
+                04=exit;
+            }
+            96=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1,2);
+            97=str profileText='Сторона: '+lotteryFaction+' | Звание: '+lotteryRankName+' | ГТУ: '+galaxyTech;
+            98=if(prizeType==0)
+            99 ^{
+                01=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ\n\n'+profileText+'\nВаше число: '+playerNumber+'\nВыигрышное число: '+winningNumber+'\n\nНа этот раз без выигрыша. Удачи в следующем розыгрыше!',10);
+                02=exit;
+            }
+        }
+        LotteryProcess ^{
+            01=if(!ScriptItemActionType(t_OnStep))exit;
+            02=int lotteryStatus=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1);
+            03=int nextLotteryTurn=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',2);
+            04=int lotteryEndTurn=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',3);
+            05=if(lotteryStatus==1 && CurTurn()>lotteryEndTurn)
+            06 ^{
+                01=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1,0);
+                02=ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',1,'');
+                03=ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',2,'');
+                04=ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',3,'');
+                05=lotteryStatus=0;
+            }
+            07=if(CurTurn()>=nextLotteryTurn && lotteryStatus!=1)
+            08 ^{
+                01=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryStart'),'core_info',core_info);
+                02=lotteryStatus=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1);
+                03=lotteryEndTurn=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',3);
+            }
+        }
+        LotteryRestoreExternal ^{
+            01=int restoreStatus=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1);
+            02=if(restoreStatus!=1 && restoreStatus!=3)exit;
+            03=int restoreEndTurn=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',3);
+            04=int restoreStartTurn=restoreEndTurn-59;
+            05=int restoreStationId=0+ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',3);
+            06=if(!restoreStationId)exit;
+            07=int restorePlayerId=Id(Player());
+            08=unknown LotteryHasRecord=ImportedFunction('FHDStationsLotteryNative','LotteryHasRecord');
+            09=if(!LotteryHasRecord(restoreStartTurn,restoreStationId,restorePlayerId))exit;
+            10=unknown LotteryGetField=ImportedFunction('FHDStationsLotteryNative','LotteryGetField');
+            11=int restoreChosen=LotteryGetField(restoreStartTurn,restoreStationId,restorePlayerId,0);
+            12=int restoreWinning=LotteryGetField(restoreStartTurn,restoreStationId,restorePlayerId,1);
+            13=int restorePrizeType=LotteryGetField(restoreStartTurn,restoreStationId,restorePlayerId,2);
+            14=int restoreP1=LotteryGetField(restoreStartTurn,restoreStationId,restorePlayerId,3);
+            15=int restoreP2=LotteryGetField(restoreStartTurn,restoreStationId,restorePlayerId,4);
+            16=int restoreP3=LotteryGetField(restoreStartTurn,restoreStationId,restorePlayerId,5);
+            17=int restoreP4=LotteryGetField(restoreStartTurn,restoreStationId,restorePlayerId,6);
+            18=str restorePrizeText='В этом розыгрыше вы ничего не выиграли.';
+            19=if(restorePrizeType==1)
+            20 ^{
+                01=ShipMoney(Player(),ShipMoney(Player())+restoreP1);
+                02=restorePrizeText='Ваш ранее выигранный денежный приз восстановлен после загрузки сохранения: '+restoreP1+' кредитов.';
+            }
+            21=else if(restorePrizeType==2)
+            22 ^{
+                01=dword restoredEquipment=CreateEquipment(restoreP1,restoreP2,restoreP3,restoreP4);
+                02=if(restoredEquipment)
+                03 ^{
+                    01=AddItemToShip(Player(),restoredEquipment);
+                    02=restorePrizeText='Ваш ранее выигранный приз восстановлен после загрузки сохранения:\n'+ItemFullName(restoredEquipment);
+                }
+                04=else
+                05 ^{
+                    01=ShipMoney(Player(),ShipMoney(Player())+50000);
+                    02=restorePrizeText='Не удалось восстановить оборудование. Вместо него начислено 50 000 кредитов.';
+                }
+            }
+            23=else if(restorePrizeType==3)
+            24 ^{
+                01=dword restoredMM=CreateMM(restoreP1);
+                02=if(restoredMM)
+                03 ^{
+                    01=AddItemToShip(Player(),restoredMM);
+                    02=restorePrizeText='Ваш ранее выигранный микромодуль восстановлен после загрузки сохранения:\n'+ItemFullName(restoredMM);
+                }
+                04=else
+                05 ^{
+                    01=ShipMoney(Player(),ShipMoney(Player())+25000);
+                    02=restorePrizeText='Не удалось восстановить микромодуль. Вместо него начислено 25 000 кредитов.';
+                }
+            }
+            25=else if(restorePrizeType==4)
+            26 ^{
+                01=ShipMoney(Player(),ShipMoney(Player())+restoreP1);
+                02=dword restoreDock=GetShipRuins(Player());
+                03=dword restoredHull=CreateHull(2,restoreP2,restoreP3,restoreP4);
+                04=if(restoredHull && restoreDock)
+                05 ^{
+                    01=AddItemToStorage(restoreDock,restoredHull);
+                    02=restorePrizeText='Восстановлены денежный приз '+restoreP1+' кредитов и выигранный корпус корабля:\n'+ItemFullName(restoredHull)+'\nКорпус помещён на склад станции.';
+                }
+                06=else
+                07 ^{
+                    01=if(restoredHull)FreeItem(restoredHull);
+                    02=restorePrizeText='Денежный приз '+restoreP1+' кредитов восстановлен. Корпус корабля восстановить не удалось.';
+                }
+            }
+            27=else if(restorePrizeType==5)
+            28 ^{
+                01=dword restoredArt=CreateArt(restoreP1,restoreP2);
+                02=if(restoredArt)
+                03 ^{
+                    01=AddItemToShip(Player(),restoredArt);
+                    02=restorePrizeText='Ваш ранее выигранный редкий артефакт восстановлен после загрузки сохранения:\n'+ItemFullName(restoredArt);
+                }
+                04=else
+                05 ^{
+                    01=ShipMoney(Player(),ShipMoney(Player())+75000);
+                    02=restorePrizeText='Не удалось восстановить артефакт. Вместо него начислено 75 000 кредитов.';
+                }
+            }
+            29=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1,2);
+            30=MessageBox('МОШЕННИЧЕСТВО В НАШЕЙ ЛОТЕРЕЕ ЗАПРЕЩЕНО!\n\nВы уже участвовали в этом розыгрыше.\nВаше число: '+restoreChosen+'\nВыигрышное число: '+restoreWinning+'\n\n'+restorePrizeText+'\n\nПовторное участие после загрузки сохранения невозможно.',10);
+        }
+        LotteryStart ^{
+            01=unknown allTypes=newarray(6);
+            02=allTypes[0]='RC';
+            03=allTypes[1]='WB';
+            04=allTypes[2]='MC';
+            05=allTypes[3]='PB';
+            06=allTypes[4]='SB';
+            07=allTypes[5]='BK';
+            08=unknown availableTypes=newarray(1);
+            09=int typeIndex=0;
+            10=int starIndex=0;
+            11=int ruinIndex=0;
+            12=int hasType=0;
+            13=dword checkStar=0;
+            14=dword checkStation=0;
+            15=str checkType='';
+            16=for(typeIndex=0;typeIndex<6;typeIndex=typeIndex+1)
+            17 ^{
+                01=checkType=allTypes[typeIndex];
+                02=hasType=0;
+                03=for(starIndex=0;starIndex<GalaxyStars();starIndex=starIndex+1)
+                04 ^{
+                    01=checkStar=GalaxyStar(starIndex);
+                    02=if(!checkStar)continue;
+                    03=if(!SectorVisible(StarToCon(checkStar)))continue;
+                    04=for(ruinIndex=0;ruinIndex<StarRuins(checkStar);ruinIndex=ruinIndex+1)
+                    05 ^{
+                        01=checkStation=StarRuins(checkStar,ruinIndex);
+                        02=if(checkStation && ShipType(checkStation)==checkType)hasType=1;
+                    }
+                }
+                05=if(hasType)ArrayAdd(availableTypes,checkType);
+            }
+            18=ArrayDelete(availableTypes,0);
+            19=if(!ArrayDim(availableTypes))
+            20 ^{
+                01=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',2,CurTurn()+7);
+                02=free(allTypes);
+                03=free(availableTypes);
+                04=exit;
+            }
+            21=int selectedTypeIndex=Rnd(0,ArrayDim(availableTypes)-1);
+            22=str selectedType=availableTypes[selectedTypeIndex];
+            23=unknown candidateStars=newarray(1);
+            24=unknown candidateStations=newarray(1);
+            25=for(starIndex=0;starIndex<GalaxyStars();starIndex=starIndex+1)
+            26 ^{
+                01=checkStar=GalaxyStar(starIndex);
+                02=if(!checkStar)continue;
+                03=if(!SectorVisible(StarToCon(checkStar)))continue;
+                04=for(ruinIndex=0;ruinIndex<StarRuins(checkStar);ruinIndex=ruinIndex+1)
+                05 ^{
+                    01=checkStation=StarRuins(checkStar,ruinIndex);
+                    02=if(!checkStation)continue;
+                    03=if(ShipType(checkStation)!=selectedType)continue;
+                    04=ArrayAdd(candidateStars,Id(checkStar));
+                    05=ArrayAdd(candidateStations,Id(checkStation));
+                }
+            }
+            27=ArrayDelete(candidateStars,0);
+            28=ArrayDelete(candidateStations,0);
+            29=if(!ArrayDim(candidateStations))
+            30 ^{
+                01=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',2,CurTurn()+7);
+                02=free(allTypes);
+                03=free(availableTypes);
+                04=free(candidateStars);
+                05=free(candidateStations);
+                06=exit;
+            }
+            31=int selectedStationIndex=Rnd(0,ArrayDim(candidateStations)-1);
+            32=int selectedStarId=candidateStars[selectedStationIndex];
+            33=int selectedStationId=candidateStations[selectedStationIndex];
+            34=int lotteryEnd=CurTurn()+59;
+            35=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',1,1);
+            36=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',2,CurTurn()+182);
+            37=ShipCustomShipInfoData(Player(),'FHDStationsLotteryCore',3,lotteryEnd);
+            38=ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',1,selectedType);
+            39=ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',2,''+selectedStarId);
+            40=ShipCustomShipInfoTextData(Player(),'FHDStationsLotteryCore',3,''+selectedStationId);
+            41=str selectedTypeName=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTypeName'),'type_code',selectedType,'result');
+            42=str lotteryMessage='<color=255,215,0>★ ЛОТЕРЕЯ НАЧАЛАСЬ! ★</color>\n\nТип станции: <color=255,240,120>'+selectedTypeName+'</color>\nНачало: '+GameDateTxtByTurn(CurTurn())+'\nОкончание: '+GameDateTxtByTurn(lotteryEnd)+'\n\nУ вас есть 60 дней, чтобы найти станцию, на которой проходит бесплатная лотерея, и сыграть. Местоположение станции не раскрывается.';
+            43=Ether(7,'FHDStationsLottery_'+CurTurn(),lotteryMessage);
+            44=free(allTypes);
+            45=free(availableTypes);
+            46=free(candidateStars);
+            47=free(candidateStations);
+        }
+        LotteryTestEquipment ^{
+            01=int testEqPirate=ShipInPirateClan(Player());
+            02=int testEqRank=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestRankIndex'),'result');
+            03=str testEqProfile=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestProfile'),'result');
+            04=int testEqRoll=Rnd(1,100);
+            05=int testEqQualityStep=0;
+            06=if(testEqRoll>60)testEqQualityStep=1;
+            07=if(testEqRoll>85)testEqQualityStep=2;
+            08=if(testEqRoll>95)testEqQualityStep=3;
+            09=int testEqClass=0;
+            10=str testEqClassName='базовое оборудование';
+            11=int testEqFromBH=0;
+            12=int testEqCombatChance=0;
+            13=if(!testEqPirate)
+            14 ^{
+                01=if(testEqRank==1)
+                02 ^{
+                    01=testEqClass=0;
+                    02=testEqClassName='базовое оборудование';
+                    03=if(testEqRoll>60){testEqClass=1;testEqClassName='обычное оборудование';}
+                }
+                03=else if(testEqRank==2){testEqClass=1;testEqClassName='обычное оборудование';}
+                04=else if(testEqRank==3){testEqClass=2;testEqClassName='оборудование среднего уровня';}
+                05=else if(testEqRank==4){testEqClass=3;testEqClassName='хорошее оборудование из ЧД';testEqFromBH=1;}
+                06=else if(testEqRank==5){testEqClass=3;testEqClassName='хорошее оборудование из ЧД';testEqFromBH=1;}
+                07=else if(testEqRank==6){testEqClass=4;testEqClassName='очень хорошее оборудование из ЧД';testEqFromBH=1;}
+                08=else if(testEqRank==7){testEqClass=5;testEqClassName='редкое оборудование из ЧД';testEqFromBH=1;}
+            }
+            15=else
+            16 ^{
+                01=testEqFromBH=1;
+                02=testEqClassName='базовое оборудование из ЧД';
+                03=if(testEqRank==1){testEqClass=1;testEqClassName='обычное оборудование из ЧД';}
+                04=else if(testEqRank==2){testEqClass=1;testEqClassName='обычное/боевое оборудование из ЧД';testEqCombatChance=60;}
+                05=else if(testEqRank==3){testEqClass=2;testEqClassName='оборудование среднего уровня из ЧД';}
+                06=else if(testEqRank==4){testEqClass=3;testEqClassName='хорошее боевое оборудование из ЧД';testEqCombatChance=75;}
+                07=else if(testEqRank==5)
+                08 ^{
+                    01=testEqClass=3;
+                    02=testEqClassName='хорошее оборудование из ЧД';
+                    03=if(testEqRoll>85){testEqClass=5;testEqClassName='редкое оборудование из ЧД';}
+                    04=testEqCombatChance=45;
+                }
+                09=else if(testEqRank==6){testEqClass=5;testEqClassName='редкое оборудование из ЧД';testEqCombatChance=50;}
+                10=else if(testEqRank==7){testEqClass=6;testEqClassName='очень редкое оборудование из ЧД';testEqCombatChance=55;}
+            }
+            17=int testEqGTU=GalaxyTechLevel();
+            18=int testEqMinTech=1;
+            19=int testEqMaxTech=max(1,testEqGTU-3);
+            20=if(testEqClass==1){testEqMaxTech=max(1,testEqGTU-2);testEqMinTech=max(1,testEqMaxTech-1);}
+            21=else if(testEqClass==2){testEqMaxTech=max(1,testEqGTU-1);testEqMinTech=max(1,testEqMaxTech-1);}
+            22=else if(testEqClass==3){testEqMaxTech=testEqGTU;testEqMinTech=max(1,testEqGTU-2);}
+            23=else if(testEqClass==4){testEqMaxTech=testEqGTU;testEqMinTech=max(1,testEqGTU-1);}
+            24=else if(testEqClass>=5){testEqMaxTech=testEqGTU;testEqMinTech=testEqGTU;}
+            25=if(testEqMaxTech>testEqGTU)testEqMaxTech=testEqGTU;
+            26=if(testEqMinTech>testEqMaxTech)testEqMinTech=testEqMaxTech;
+            27=int testEqTech=testEqMinTech;
+            28=int testEqTechSpan=testEqMaxTech-testEqMinTech;
+            29=if(testEqQualityStep==1)testEqTech=testEqMinTech+(testEqTechSpan+2)/3;
+            30=else if(testEqQualityStep==2)testEqTech=testEqMinTech+(2*testEqTechSpan+2)/3;
+            31=else if(testEqQualityStep==3)testEqTech=testEqMaxTech;
+            32=if(testEqTech>testEqGTU)testEqTech=testEqGTU;
+            33=int testEqType=Rnd(t_FuelTanks,t_DefGenerator);
+            34=if(testEqCombatChance>0 && Rnd(1,100)<=testEqCombatChance)testEqType=Rnd(t_Weapon1,t_Weapon18);
+            35=int testEqSize=Rnd(10,100);
+            36=if(testEqClass>=3)testEqSize=Rnd(10,40);
+            37=if(testEqSize<10)testEqSize=10;
+            38=if(testEqClass>=3 && testEqSize>40)testEqSize=40;
+            39=if(testEqClass<3 && testEqSize>100)testEqSize=100;
+            40=int testEqWeightRuleApplied=1;
+            41=int testEqOwner=Rnd(0,4);
+            42=if(testEqFromBH)testEqOwner=6;
+            43=if(!testEqFromBH)testEqOwner=Rnd(0,4);
+            44=if(testEqFromBH)testEqOwner=6;
+            45=if(!testEqFromBH && (testEqOwner<0 || testEqOwner>4))testEqOwner=Rnd(0,4);
+            46=dword testEquipment=CreateEquipment(testEqType,testEqSize,testEqTech,testEqOwner);
+            47=if(testEquipment)
+            48 ^{
+                01=AddItemToShip(Player(),testEquipment);
+                02=str testEqSource='обычный призовой пул';
+                03=if(testEqFromBH)testEqSource='пул ЧД';
+                04=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\n'+testEqProfile+'\nВаше число: '+player_number+'\nВыигрышное число: '+winning_number+'\n\nРазница ±1. Розыгрыш выполнен строго для текущего звания.\nПризовая категория: '+testEqClassName+'\nИсточник: '+testEqSource+'\nКачество внутри категории: '+testEqQualityStep+' из 3 (60/25/10/5)\nТехнологический уровень: '+testEqTech+' / ГТУ '+testEqGTU+'\nВес: '+testEqSize+' т.\n\n'+ItemFullName(testEquipment),10);
+                05=exit;
+            }
+            49=int testEqFallback=50000;
+            50=ShipMoney(Player(),ShipMoney(Player())+testEqFallback);
+            51=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\n'+testEqProfile+'\nВаше число: '+player_number+'\nВыигрышное число: '+winning_number+'\n\nПризовая категория по званию: '+testEqClassName+'\nОборудование создать не удалось. Выдано '+testEqFallback+' кредитов.',10);
+        }
+        LotteryTestExact ^{
+            01=int testExactPirate=ShipInPirateClan(Player());
+            02=int testExactRank=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestRankIndex'),'result');
+            03=str testExactProfile=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestProfile'),'result');
+            04=int testExactMoney=100000;
+            05=if(!testExactPirate)
+            06 ^{
+                01=if(testExactRank==1)testExactMoney=110000;
+                02=else if(testExactRank==2)testExactMoney=120000;
+                03=else if(testExactRank==3)testExactMoney=130000;
+                04=else if(testExactRank==4)testExactMoney=140000;
+                05=else if(testExactRank==5)testExactMoney=150000;
+                06=else if(testExactRank==6)testExactMoney=175000;
+                07=else if(testExactRank==7)testExactMoney=200000;
+            }
+            07=else
+            08 ^{
+                01=testExactMoney=75000;
+                02=if(testExactRank==1)testExactMoney=85000;
+                03=else if(testExactRank==2)testExactMoney=105000;
+                04=else if(testExactRank==3)testExactMoney=140000;
+                05=else if(testExactRank==4)testExactMoney=180000;
+                06=else if(testExactRank==5)testExactMoney=250000;
+                07=else if(testExactRank==6)testExactMoney=275000;
+                08=else if(testExactRank==7)testExactMoney=300000;
+            }
+            09=ShipMoney(Player(),ShipMoney(Player())+testExactMoney);MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\n'+testExactProfile+'\nВаше число: '+player_number+'\nВыигрышное число: '+winning_number+'\n\n★ ТОЧНОЕ СОВПАДЕНИЕ! ★\nВы выиграли '+testExactMoney+' кредитов.',10);
+            10=int testShipChance=0;
+            11=int testShipGoodChance=25;
+            12=int testShipRareChance=0;
+            13=if(!testExactPirate && testExactRank==5){testShipChance=5;testShipRareChance=6;}
+            14=else if(!testExactPirate && testExactRank==6){testShipChance=10;testShipRareChance=7;}
+            15=else if(!testExactPirate && testExactRank==7){testShipChance=15;testShipRareChance=8;}
+            16=else if(testExactPirate && testExactRank==5){testShipChance=8;testShipGoodChance=30;testShipRareChance=6;}
+            17=else if(testExactPirate && testExactRank==6){testShipChance=15;testShipGoodChance=30;testShipRareChance=7;}
+            18=else if(testExactPirate && testExactRank==7){testShipChance=20;testShipGoodChance=30;testShipRareChance=8;}
+            19=int testShipChanceRoll=0;str testShipText='';if(testShipChance>0){testShipChanceRoll=Rnd(1,100);testShipText='ДОПОЛНИТЕЛЬНЫЙ РОЗЫГРЫШ КОРАБЛЯ\n\nШанс: '+testShipChance+'%.\nПобедный диапазон: 1–'+testShipChance+'.\nВыпало: '+testShipChanceRoll+'.\n\nКорабль не выигран.';}
+            20=if(testShipChance>0 && testShipChanceRoll<=testShipChance)
+            21 ^{
+                01=int testHullRoll=Rnd(1,100);
+                02=int testHullQuality=0;
+                03=int testHullOrdinary=100-testShipGoodChance-testShipRareChance;
+                04=if(testHullRoll>testHullOrdinary)testHullQuality=1;
+                05=if(testHullRoll>testHullOrdinary+testShipGoodChance)testHullQuality=2;
+                06=str testHullQualityName='обычный';if(testHullQuality==1)testHullQualityName='хороший';else if(testHullQuality==2)testHullQualityName='редкий';int testHullTech=GalaxyTechLevel();
+                07=int testHullSize=100+80*testHullTech;
+                08=if(testHullQuality==1)testHullSize=100+110*testHullTech;
+                09=else if(testHullQuality==2)testHullSize=100+140*testHullTech;
+                10=if(testHullSize>1300)testHullSize=1300;
+                11=int testHullOwner=ShipOwner(Player());
+                12=if(testHullOwner<0 || testHullOwner>4)testHullOwner=Rnd(0,4);
+                13=dword testHull=CreateHull(2,testHullSize,testHullTech,testHullOwner);testShipText='ДОПОЛНИТЕЛЬНЫЙ РОЗЫГРЫШ КОРАБЛЯ\n\nШанс: '+testShipChance+'%. Победный диапазон: 1–'+testShipChance+'. Выпало: '+testShipChanceRoll+'.\n\nБросок выигрышный, но корпус создать не удалось.';
+                14=if(testHull)
+                15 ^{
+                    01=dword testDock=IdToShip(dock_id);
+                    02=if(testDock)AddItemToStorage(testDock,testHull);
+                    03=else AddItemToShip(Player(),testHull);
+                    04=testShipText='★ ДОПОЛНИТЕЛЬНЫЙ РОЗЫГРЫШ КОРАБЛЯ — ВЫИГРЫШ! ★\n\nШанс: '+testShipChance+'%. Победный диапазон: 1–'+testShipChance+'. Выпало: '+testShipChanceRoll+'.\nКачество корпуса: '+testHullQualityName+'.\n\n'+ItemFullName(testHull)+'\nКорпус помещён на склад станции.';
+                }
+            }
+            22=if(testShipChance>0)MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\n'+testExactProfile+'\n\n'+testShipText,10);
+        }
+        LotteryTestModule ^{
+            01=int testMmPirate=ShipInPirateClan(Player());
+            02=int testMmRank=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestRankIndex'),'result');
+            03=str testMmProfile=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestProfile'),'result');
+            04=int testMmGTU=GalaxyTechLevel();
+            05=int testArtifactMode=0;
+            06=int testArtifactBHChance=0;
+            07=str testPrizeByRank='базовый модуль';
+            08=int testMmCategory=0;
+            09=if(!testMmPirate)
+            10 ^{
+                01=if(testMmRank==1)
+                02 ^{
+                    01=testPrizeByRank='базовый/обычный модуль';
+                    02=testMmCategory=0;
+                    03=if(Rnd(1,100)>58)testMmCategory=1;
+                }
+                03=else if(testMmRank==2)
+                04 ^{
+                    01=testPrizeByRank='обычный модуль';
+                    02=testMmCategory=1;
+                    03=if(Rnd(1,100)<=4){testMmCategory=2;testPrizeByRank='средний модуль (сработал бонус Пилота +4%)';}
+                }
+                05=else if(testMmRank==3)
+                06 ^{
+                    01=testPrizeByRank='модуль среднего уровня';
+                    02=testMmCategory=2;
+                    03=if(Rnd(1,100)<=6){testMmCategory=3;testPrizeByRank='хороший модуль (сработал бонус Капитана +6%)';}
+                }
+                07=else if(testMmRank==4){testArtifactMode=1;testArtifactBHChance=4;testPrizeByRank='артефакт любой расы (+4% шанс артефакта из ЧД)';}
+                08=else if(testMmRank==5){testArtifactMode=1;testArtifactBHChance=6;testPrizeByRank='артефакт любой расы (+6% шанс артефакта из ЧД)';}
+                09=else if(testMmRank==6){testArtifactMode=2;testArtifactBHChance=8;testPrizeByRank='артефакт гаальцев / ЧД (+8% шанс ЧД)';}
+                10=else if(testMmRank==7){testArtifactMode=3;testPrizeByRank='артефакт из ЧД';}
+            }
+            11=else
+            12 ^{
+                01=if(testMmRank==1)
+                02 ^{
+                    01=testPrizeByRank='базовый/обычный модуль';
+                    02=testMmCategory=0;
+                    03=if(Rnd(1,100)>60)testMmCategory=1;
+                }
+                03=else if(testMmRank==2){testMmCategory=1;testPrizeByRank='обычный модуль';}
+                04=else if(testMmRank==3)
+                05 ^{
+                    01=testMmCategory=2;
+                    02=testPrizeByRank='модуль среднего уровня';
+                    03=if(Rnd(1,100)<=2){testArtifactMode=1;testPrizeByRank='артефакт любой расы — сработал бонус Шкипера 2%';}
+                }
+                06=else if(testMmRank==4)
+                07 ^{
+                    01=testMmCategory=3;
+                    02=testPrizeByRank='хороший модуль';
+                    03=if(Rnd(1,100)<=4){testArtifactMode=1;testPrizeByRank='артефакт любой расы — сработал бонус Головореза 4%';}
+                }
+                08=else if(testMmRank==5)
+                09 ^{
+                    01=testPrizeByRank='хороший/редкий модуль';
+                    02=testMmCategory=3;
+                    03=if(Rnd(1,100)>60)testMmCategory=4;
+                    04=if(Rnd(1,100)<=5){testArtifactMode=1;testPrizeByRank='артефакт любой расы — сработал бонус Атамана 5%';}
+                }
+                10=else if(testMmRank==6)
+                11 ^{
+                    01=testMmCategory=4;
+                    02=testPrizeByRank='редкий модуль';
+                    03=if(Rnd(1,100)<=7){testArtifactMode=3;testPrizeByRank='артефакт из ЧД — сработал бонус Хана 7%';}
+                }
+                12=else if(testMmRank==7){testArtifactMode=3;testPrizeByRank='артефакт из ЧД';}
+            }
+            13=if(testArtifactMode>0)
+            14 ^{
+                01=int testArtRoll=Rnd(0,3);
+                02=int testArtType=t_ArtefactSpeed;
+                03=if(testArtRoll==1)testArtType=t_ArtefactNano;
+                04=else if(testArtRoll==2)testArtType=t_ArtefactDef;
+                05=else if(testArtRoll==3)testArtType=t_ArtefactPower;
+                06=int testArtOwner=Rnd(0,4);
+                07=str testArtSource='артефакт случайной расы';
+                08=if(testArtifactMode==2){testArtOwner=4;testArtSource='гаальский артефакт';}
+                09=else if(testArtifactMode==3){testArtOwner=6;testArtSource='артефакт из ЧД';}
+                10=if(testArtifactMode<3 && testArtifactBHChance>0 && Rnd(1,100)<=testArtifactBHChance){testArtOwner=6;testArtSource='артефакт из ЧД — сработал бонус звания';}
+                11=dword testArt=CreateArt(testArtType,testArtOwner);
+                12=if(testArt)
+                13 ^{
+                    01=AddItemToShip(Player(),testArt);
+                    02=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\n'+testMmProfile+'\nВаше число: '+player_number+'\nВыигрышное число: '+winning_number+'\n\nРазница ±2. Розыгрыш выполнен строго для текущего звания.\nПризовая категория: '+testPrizeByRank+'\nФактически выпало: '+testArtSource+'\n\n'+ItemFullName(testArt),10);
+                    03=exit;
+                }
+            }
+            15=if(0)
+            16 ^{
+                01=if(testMmRank>=6)testMmCategory=4;else testMmCategory=3;
+                02=testPrizeByRank=testPrizeByRank+'; артефакт ещё закрыт текущим ГТУ, поэтому временно используется соответствующий модуль';
+            }
+            17=int testMmMax=29+10*testMmGTU;
+            18=if(testMmMax>100)testMmMax=100;
+            19=if(testMmMax<34)testMmMax=34;
+            20=int testMmRange=testMmMax-30;
+            21=int testMmQ1=30+(testMmRange+3)/4;
+            22=int testMmQ2=30+(testMmRange+1)/2;
+            23=int testMmQ3=30+(3*testMmRange+3)/4;
+            24=int testMmCatMin=31;
+            25=int testMmCatHigh=testMmQ1;
+            26=if(testMmCategory==1){testMmCatMin=testMmQ1+1;testMmCatHigh=testMmQ2;}
+            27=else if(testMmCategory==2){testMmCatMin=testMmQ2+1;testMmCatHigh=testMmQ3;}
+            28=else if(testMmCategory==3){testMmCatMin=testMmQ3+1;testMmCatHigh=testMmMax;}
+            29=else if(testMmCategory>=4){testMmCatMin=(testMmQ3+1+testMmMax)/2;testMmCatHigh=testMmMax;}
+            30=if(testMmCatMin<31)testMmCatMin=31;
+            31=if(testMmCatHigh<testMmCatMin)testMmCatHigh=testMmCatMin;
+            32=int testMmQualityRoll=Rnd(1,100);
+            33=int testMmQualityStep=0;
+            34=if(testMmQualityRoll>60)testMmQualityStep=1;
+            35=if(testMmQualityRoll>85)testMmQualityStep=2;
+            36=if(testMmQualityRoll>95)testMmQualityStep=3;
+            37=int testMmLen=testMmCatHigh-testMmCatMin+1;
+            38=int testMmS1=testMmCatMin+(testMmLen+3)/4-1;
+            39=int testMmS2=testMmCatMin+(testMmLen+1)/2-1;
+            40=int testMmS3=testMmCatMin+(3*testMmLen+3)/4-1;
+            41=if(testMmS1>testMmCatHigh)testMmS1=testMmCatHigh;
+            42=if(testMmS2>testMmCatHigh)testMmS2=testMmCatHigh;
+            43=if(testMmS3>testMmCatHigh)testMmS3=testMmCatHigh;
+            44=int testMmMin=testMmCatMin;
+            45=int testMmHigh=testMmS1;
+            46=if(testMmQualityStep==1){testMmMin=min(testMmS1+1,testMmCatHigh);testMmHigh=max(testMmMin,testMmS2);}
+            47=else if(testMmQualityStep==2){testMmMin=min(testMmS2+1,testMmCatHigh);testMmHigh=max(testMmMin,testMmS3);}
+            48=else if(testMmQualityStep==3){testMmMin=min(testMmS3+1,testMmCatHigh);testMmHigh=testMmCatHigh;}
+            49=unknown testMmList=newarray(1);
+            50=BuildListOfMMByPriority(testMmList,testMmMin,testMmHigh);
+            51=if(!ArrayDim(testMmList))BuildListOfMMByPriority(testMmList,testMmCatMin,testMmCatHigh);
+            52=if(!ArrayDim(testMmList))BuildListOfMMByPriority(testMmList,31,testMmMax);
+            53=if(ArrayDim(testMmList))
+            54 ^{
+                01=ArrayRandomize(50,testMmList);int testMmBonus=testMmList[Rnd(0,ArrayDim(testMmList)-1)];
+                02=dword testMm=CreateMM(testMmBonus);
+                03=if(testMm)
+                04 ^{
+                    01=AddItemToShip(Player(),testMm);
+                    02=free(testMmList);
+                    03=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\n'+testMmProfile+'\nВаше число: '+player_number+'\nВыигрышное число: '+winning_number+'\n\nРазница ±2. Розыгрыш выполнен строго для текущего звания.\nПризовая категория: '+testPrizeByRank+'\nКачество внутри категории: '+testMmQualityStep+' из 3 (60/25/10/5)\nДиапазон приоритета: '+testMmMin+'–'+testMmHigh+' при ГТУ '+testMmGTU+'\n\n'+ItemFullName(testMm),10);
+                    04=exit;
+                }
+            }
+            55=free(testMmList);
+            56=ShipMoney(Player(),ShipMoney(Player())+25000);
+            57=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\n'+testMmProfile+'\nВаше число: '+player_number+'\nВыигрышное число: '+winning_number+'\n\nПризовая категория по званию: '+testPrizeByRank+'\nПриз создать не удалось. Выдано 25 000 кредитов.',10);
+        }
+        LotteryTestPlay ^{
+            01=int testPlayerNumber=player_number;
+            02=dword testDock=IdToShip(dock_id);
+            03=if(!testDock){MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\nОшибка теста: лотерейная станция не найдена.',10);exit;}
+            04=int testWinningNumber=Rnd(0,20);
+            05=int testDifference=testPlayerNumber-testWinningNumber;
+            06=if(testDifference<0)testDifference=0-testDifference;
+            07=if(testDifference>10)testDifference=21-testDifference;
+            08=str testProfile=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestProfile'),'result');
+            09=if(!testDifference)
+            10 ^{
+                01=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestExact'),'dock_id',dock_id,'player_number',testPlayerNumber,'winning_number',testWinningNumber);
+                02=exit;
+            }
+            11=if(testDifference==1)
+            12 ^{
+                01=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestEquipment'),'dock_id',dock_id,'player_number',testPlayerNumber,'winning_number',testWinningNumber);
+                02=exit;
+            }
+            13=if(testDifference==2)
+            14 ^{
+                01=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestModule'),'dock_id',dock_id,'player_number',testPlayerNumber,'winning_number',testWinningNumber);
+                02=exit;
+            }
+            15=MessageBox('ГАЛАКТИЧЕСКАЯ ЛОТЕРЕЯ — ТЕСТ\n\n'+testProfile+'\nВаше число: '+testPlayerNumber+'\nВыигрышное число: '+testWinningNumber+'\n\nРазница '+testDifference+'. Награда выдаётся только за точное совпадение, ±1 или ±2.',10);
+        }
+        LotteryTestProfile ^{
+            01=int testProfilePirate=ShipInPirateClan(Player());
+            02=int testProfileRank=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryTestRankIndex'),'result');
+            03=str testProfileFaction='Коалиция';
+            04=str testProfileRankName='Новичок';
+            05=if(testProfilePirate)
+            06 ^{
+                01=testProfileFaction='Пираты';
+                02=testProfileRankName='Салага';
+                03=if(testProfileRank==1)testProfileRankName='Юнга';
+                04=else if(testProfileRank==2)testProfileRankName='Рейдер';
+                05=else if(testProfileRank==3)testProfileRankName='Шкипер';
+                06=else if(testProfileRank==4)testProfileRankName='Головорез';
+                07=else if(testProfileRank==5)testProfileRankName='Атаман';
+                08=else if(testProfileRank==6)testProfileRankName='Хан';
+                09=else if(testProfileRank==7)testProfileRankName='Барон';
+            }
+            07=else
+            08 ^{
+                01=if(testProfileRank==1)testProfileRankName='Кадет';
+                02=else if(testProfileRank==2)testProfileRankName='Пилот';
+                03=else if(testProfileRank==3)testProfileRankName='Капитан';
+                04=else if(testProfileRank==4)testProfileRankName='Истребитель';
+                05=else if(testProfileRank==5)testProfileRankName='Ас';
+                06=else if(testProfileRank==6)testProfileRankName='Командор';
+                07=else if(testProfileRank==7)testProfileRankName='Адмирал';
+            }
+            09=str result='Сторона: '+testProfileFaction+'   |   Звание: '+testProfileRankName+'   |   ГТУ: '+GalaxyTechLevel();
+        }
+        LotteryTestRankIndex ^{
+            01=int testIsPirate=ShipInPirateClan(Player());
+            02=int result=ShipRank(Player());
+            03=if(testIsPirate)result=GetShipPirateRank(Player());
+            04=if(result<0)result=0;
+            05=if(result>7)result=7;
+        }
+        LotteryTypeName ~{
+            01=str result='Центр рейнджеров';
+            02=if(type_code=='WB')result='Военная база';
+            03=else if(type_code=='MC')result='Медицинский центр';
+            04=else if(type_code=='PB')result='Пиратская база';
+            05=else if(type_code=='SB')result='Научная база';
+            06=else if(type_code=='BK')result='Бизнес-центр';
+        }
+        Open ~{
+            00=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryEnsure'));
+            01=unknown stationNames=newarray(10);
+            02=stationNames[0]='Центр рейнджеров';
+            03=stationNames[1]='Военная база';
+            04=stationNames[2]='Научная база';
+            05=stationNames[3]='Бизнес-центр';
+            06=stationNames[4]='Медицинский центр';
+            07=stationNames[5]='Пиратская база';
+            08=stationNames[6]='Доминион';
+            09=stationNames[7]='Технологический центр';
+            10=stationNames[8]='Подпространственная база';
+            11=stationNames[9]='Чёрный рынок';
+            12=int stationIndex=ListBox('Выберите тип станции для поиска во всех открытых системах:',stationNames);
+            13=free(stationNames);
+            14=if(stationIndex<0)exit;
+            15=InterfaceText(form_name,'SFFStateType',''+stationIndex);
+            16=InterfaceText(form_name,'SFFStatePage','0');
+            17=InterfaceState(form_name,'SFFTablePanel',1);
+            18=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Render'),'form_name',form_name);
+        }
+        PageLeft ~{
+            01=int page=0+InterfaceText(form_name,'SFFStatePage');
+            02=InterfaceText(form_name,'SFFStatePage',''+max(0,page-1));
+            03=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Render'),'form_name',form_name);
+        }
+        PageRight ~{
+            01=int page=0+InterfaceText(form_name,'SFFStatePage');
+            02=InterfaceText(form_name,'SFFStatePage',''+(page+1));
+            03=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Render'),'form_name',form_name);
+        }
+        Render ^{
+            01=int stationIndex=0+InterfaceText(form_name,'SFFStateType');
+            02=int page=0+InterfaceText(form_name,'SFFStatePage');
+            03=str stationType=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.ResolveType'),'station_index',stationIndex,'stationType');
+            04=str stationName=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.ResolveType'),'station_index',stationIndex,'stationName');
+            05=unknown rows=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.BuildRows'),'station_type',stationType,'rows');
+            06=int rowCount=ArrayDim(rows);
+            07=int cards=10;
+            08=int totalPages=max(0,(rowCount-1)/cards);
+            09=page=max(0,min(page,totalPages));
+            10=InterfaceText(form_name,'SFFStatePage',''+page);
+            11=InterfaceText(form_name,'SFFEmptyText','');
+            12=int lineIndex=0;
+            13=int rowIndex=0;
+            14=str packedRow='';
+            15=str systemName='';
+            16=str sectorName='';
+            17=str objectName='';
+            18=str ownerText='';
+            19=int rowStarId=0;
+            20=int rowStationId=0;
+            21=int lotteryCore=ShipFindCustomShipInfoByType(Player(),'FHDStationsLotteryCore');
+            22=int lotteryStatus=0;
+            23=int lotteryStarId=0;
+            24=int lotteryStationId=0;
+            25=int lotteryEndTurn=0;
+            26=if(lotteryCore>=0)
+            27 ^{
+                01=lotteryStatus=ShipCustomShipInfoData(Player(),lotteryCore,1);
+                02=lotteryEndTurn=ShipCustomShipInfoData(Player(),lotteryCore,3);
+                03=lotteryStarId=0+ShipCustomShipInfoTextData(Player(),lotteryCore,2);
+                04=lotteryStationId=0+ShipCustomShipInfoTextData(Player(),lotteryCore,3);
+            }
+            28=for(lineIndex=0;lineIndex<cards;lineIndex=lineIndex+1)
+            29 ^{
+                01=rowIndex=page*cards+lineIndex;
+                02=InterfaceText(form_name,'SFFRow'+lineIndex+'System','');
+                03=InterfaceText(form_name,'SFFRow'+lineIndex+'Sector','');
+                04=InterfaceText(form_name,'SFFRow'+lineIndex+'Station','');
+                05=InterfaceText(form_name,'SFFRow'+lineIndex+'Race','');
+                06=if(rowIndex<rowCount)
+                07 ^{
+                    01=packedRow=rows[rowIndex];
+                    02=systemName=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Field'),'packed',packedRow,'field_index',0,'result');
+                    03=sectorName=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Field'),'packed',packedRow,'field_index',1,'result');
+                    04=objectName=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Field'),'packed',packedRow,'field_index',2,'result');
+                    05=ownerText=ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Field'),'packed',packedRow,'field_index',3,'result');
+                    06=rowStarId=0+ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Field'),'packed',packedRow,'field_index',4,'result');
+                    07=rowStationId=0+ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.Field'),'packed',packedRow,'field_index',5,'result');
+                    08=if(lotteryStatus==1 && CurTurn()<=lotteryEndTurn && rowStarId==lotteryStarId && rowStationId==lotteryStationId)objectName=objectName+'   ★ ЛОТЕРЕЯ ★';
+                    09=InterfaceText(form_name,'SFFRow'+lineIndex+'System',''+(rowIndex+1)+' - '+systemName);
+                    10=InterfaceText(form_name,'SFFRow'+lineIndex+'Sector',sectorName);
+                    11=InterfaceText(form_name,'SFFRow'+lineIndex+'Station',objectName);
+                    12=InterfaceText(form_name,'SFFRow'+lineIndex+'Race',ownerText);
+                }
+            }
+            30=if(!rowCount)InterfaceText(form_name,'SFFEmptyText','Станции выбранного типа в открытых системах не найдены.');
+            31=InterfaceText(form_name,'SFFTitle','ПОИСК КОСМИЧЕСКИХ СТАНЦИЙ');
+            32=InterfaceText(form_name,'SFFTypeStatus','Тип станции: '+stationName);
+            33=InterfaceText(form_name,'SFFFoundStatus','Найдено: '+rowCount+' станций');
+            34=InterfaceText(form_name,'SFFPageText',''+(page+1)+' / '+(totalPages+1));
+            35=InterfaceState(form_name,'SFFPageLeft',page>0);
+            36=InterfaceState(form_name,'SFFPageRight',page<totalPages);
+            37=free(rows);
+        }
+        ResolveRace ^{
+            01=str result='Неизвестно';
+            02=if(owner==0)result='Малоки';
+            03=else if(owner==1)result='Пеленги';
+            04=else if(owner==2)result='Люди';
+            05=else if(owner==3)result='Фэяне';
+            06=else if(owner==4)result='Гаальцы';
+            07=else if(owner==5)result='Доминаторы';
+            08=else if(owner==6)result='Без владельца';
+            09=else if(owner==7)
+            10 ~{
+                01=result='Пиратский клан';
+                02=if(pilot_race==0)result='Пиратский клан - малоки';
+                03=else if(pilot_race==1)result='Пиратский клан - пеленги';
+                04=else if(pilot_race==2)result='Пиратский клан - люди';
+                05=else if(pilot_race==3)result='Пиратский клан - фэяне';
+                06=else if(pilot_race==4)result='Пиратский клан - гаальцы';
+            }
+        }
+        ResolveType ^{
+            01=str stationType='RC';
+            02=str stationName='Центр рейнджеров';
+            03=if(station_index==1)
+            04 ~{
+                01=stationType='WB';
+                02=stationName='Военная база';
+            }
+            05=else if(station_index==2)
+            06 ~{
+                01=stationType='SB';
+                02=stationName='Научная база';
+            }
+            07=else if(station_index==3)
+            08 ~{
+                01=stationType='BK';
+                02=stationName='Бизнес-центр';
+            }
+            09=else if(station_index==4)
+            10 ~{
+                01=stationType='MC';
+                02=stationName='Медицинский центр';
+            }
+            11=else if(station_index==5)
+            12 ~{
+                01=stationType='PB';
+                02=stationName='Пиратская база';
+            }
+            13=else if(station_index==6)
+            14 ~{
+                01=stationType='CB';
+                02=stationName='Доминион';
+            }
+            15=else if(station_index==7)
+            16 ~{
+                01=stationType='TC';
+                02=stationName='Технологический центр';
+            }
+            17=else if(station_index==8)
+            18 ~{
+                01=stationType='SSB';
+                02=stationName='Подпространственная база';
+            }
+            19=else if(station_index==9)
+            20 ~{
+                01=stationType='BM';
+                02=stationName='Чёрный рынок';
+            }
+        }
+    }
+}
+ShipInfo ^{
+    AddInfo ^{
+        CustomInfos ^{
+            FHDStationsLotteryCore ^{
+                Description=NoShow
+                Icon=0
+                Name=
+                OnActCode ^{
+                    01=if(ScriptItemActionType(t_OnStep,0))ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryProcess'),'core_info',CurInfo());
+                    02=if(ScriptItemActionType(t_OnEnteringForm))ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryDockCheck'),'core_info',CurInfo());
+                    03=if(ScriptItemActionType(t_OnReEnteringForm))ExecuteCodeFromString(GenerateCodeStringFromBlock('Script.StationFinder.LotteryDockCheck'),'core_info',CurInfo());
+                }
+                OnActCodeTypes=t_OnStep,t_OnEnteringForm,t_OnReEnteringForm
+                OnActStepTypes=0
+            }
+        }
+    }
+}
