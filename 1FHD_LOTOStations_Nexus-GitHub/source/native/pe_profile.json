@@ -1,0 +1,237 @@
+{
+  "format": "recovered-pe32-layout-v1",
+  "dos_words": [
+    23117,
+    120,
+    1,
+    0,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    64,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "pe_header_offset": 120,
+  "coff": {
+    "machine": 332,
+    "section_count": 4,
+    "timestamp": 1788601974,
+    "symbol_table_offset": 0,
+    "symbol_count": 0,
+    "optional_header_size": 224,
+    "characteristics": 8450
+  },
+  "optional": {
+    "magic": 267,
+    "linker_major": 14,
+    "linker_minor": 0,
+    "size_code": 2560,
+    "size_initialized_data": 2048,
+    "size_uninitialized_data": 0,
+    "entry_rva": 0,
+    "base_code": 4096,
+    "base_data": 0,
+    "image_base": 268435456,
+    "section_alignment": 4096,
+    "file_alignment": 512,
+    "os_major": 6,
+    "os_minor": 0,
+    "image_major": 0,
+    "image_minor": 0,
+    "subsystem_major": 6,
+    "subsystem_minor": 0,
+    "win32_version": 0,
+    "image_size": 20480,
+    "headers_size": 1024,
+    "checksum": 0,
+    "subsystem": 2,
+    "dll_characteristics": 1344,
+    "stack_reserve": 1048576,
+    "stack_commit": 4096,
+    "heap_reserve": 1048576,
+    "heap_commit": 4096,
+    "loader_flags": 0,
+    "directory_count": 16
+  },
+  "directories": [
+    [
+      8322,
+      174
+    ],
+    [
+      8496,
+      40
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      16384,
+      88
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      8584,
+      48
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "sections": [
+    {
+      "name": ".text",
+      "virtual_size": 2220,
+      "rva": 4096,
+      "raw_size": 2560,
+      "raw_offset": 1024,
+      "relocations_pointer": 0,
+      "line_numbers_pointer": 0,
+      "relocations_and_lines": 0,
+      "characteristics": 1610612768
+    },
+    {
+      "name": ".rdata",
+      "virtual_size": 649,
+      "rva": 8192,
+      "raw_size": 1024,
+      "raw_offset": 3584,
+      "relocations_pointer": 0,
+      "line_numbers_pointer": 0,
+      "relocations_and_lines": 0,
+      "characteristics": 1073741888
+    },
+    {
+      "name": ".data",
+      "virtual_size": 8,
+      "rva": 12288,
+      "raw_size": 512,
+      "raw_offset": 4608,
+      "relocations_pointer": 0,
+      "line_numbers_pointer": 0,
+      "relocations_and_lines": 0,
+      "characteristics": 3221225536
+    },
+    {
+      "name": ".reloc",
+      "virtual_size": 88,
+      "rva": 16384,
+      "raw_size": 512,
+      "raw_offset": 5120,
+      "relocations_pointer": 0,
+      "line_numbers_pointer": 0,
+      "relocations_and_lines": 0,
+      "characteristics": 1107296320
+    }
+  ],
+  "relocation_blocks": [
+    {
+      "page_rva": 4096,
+      "entries": [
+        12293,
+        12300,
+        12306,
+        12314,
+        12326,
+        12413,
+        12467,
+        12484,
+        12573,
+        12603,
+        12642,
+        12674,
+        13090,
+        13169,
+        13611,
+        13641,
+        13663,
+        13682,
+        13701,
+        13715,
+        13758,
+        13764,
+        13793,
+        14433,
+        14463,
+        14470
+      ]
+    },
+    {
+      "page_rva": 8192,
+      "entries": [
+        12288,
+        12292,
+        12296,
+        12300,
+        12304,
+        12308,
+        12312,
+        12316,
+        12320,
+        12324
+      ]
+    }
+  ]
+}

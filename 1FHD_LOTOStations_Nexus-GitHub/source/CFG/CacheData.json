@@ -1,0 +1,64 @@
+{
+  "format": "cachedata",
+  "seed": -319409088,
+  "root": {
+    "entries": [
+      {
+        "kind": "block",
+        "name": "Bm",
+        "value": {
+          "entries": [
+            {
+              "kind": "block",
+              "name": "FHD_Stations",
+              "value": {
+                "entries": [
+                  {
+                    "kind": "parameter",
+                    "name": "2FindA",
+                    "value": "Mods\\FHD_MODS\\FHD_LOTOStations\\Data\\Image\\2FindA.gi"
+                  },
+                  {
+                    "kind": "parameter",
+                    "name": "2FindD",
+                    "value": "Mods\\FHD_MODS\\FHD_LOTOStations\\Data\\Image\\2FindD.gi"
+                  },
+                  {
+                    "kind": "parameter",
+                    "name": "2FindN",
+                    "value": "Mods\\FHD_MODS\\FHD_LOTOStations\\Data\\Image\\2FindN.gi"
+                  },
+                  {
+                    "kind": "parameter",
+                    "name": "2ShipA",
+                    "value": "Mods\\FHD_MODS\\FHD_LOTOStations\\Data\\Image\\2ShipA.gi"
+                  },
+                  {
+                    "kind": "parameter",
+                    "name": "2ShipD",
+                    "value": "Mods\\FHD_MODS\\FHD_LOTOStations\\Data\\Image\\2ShipD.gi"
+                  },
+                  {
+                    "kind": "parameter",
+                    "name": "2ShipN",
+                    "value": "Mods\\FHD_MODS\\FHD_LOTOStations\\Data\\Image\\2ShipN.gi"
+                  },
+                  {
+                    "kind": "parameter",
+                    "name": "TableBackground",
+                    "value": "Mods\\FHD_MODS\\FHD_LOTOStations\\Data\\Image\\TableBackground.gi"
+                  },
+                  {
+                    "kind": "parameter",
+                    "name": "LotteryBackground",
+                    "value": "Mods\\FHD_MODS\\FHD_LOTOStations\\Data\\Image\\LotteryBackground.gi"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

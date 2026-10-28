@@ -1,0 +1,274 @@
+[
+  {
+    "format": "srhd-gi0-rgb565-png-v1",
+    "version": 1,
+    "bounds": [
+      0,
+      0,
+      162,
+      21
+    ],
+    "masks": [
+      63488,
+      2016,
+      31,
+      0
+    ],
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "layer_bounds": [
+      0,
+      0,
+      162,
+      21
+    ],
+    "layer_reserved": [
+      0,
+      0
+    ],
+    "png": "2FindA.png",
+    "runtime_path": "Data/Image/2FindA.gi"
+  },
+  {
+    "format": "srhd-gi0-rgb565-png-v1",
+    "version": 1,
+    "bounds": [
+      0,
+      0,
+      162,
+      21
+    ],
+    "masks": [
+      63488,
+      2016,
+      31,
+      0
+    ],
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "layer_bounds": [
+      0,
+      0,
+      162,
+      21
+    ],
+    "layer_reserved": [
+      0,
+      0
+    ],
+    "png": "2FindD.png",
+    "runtime_path": "Data/Image/2FindD.gi"
+  },
+  {
+    "format": "srhd-gi0-rgb565-png-v1",
+    "version": 1,
+    "bounds": [
+      0,
+      0,
+      162,
+      21
+    ],
+    "masks": [
+      63488,
+      2016,
+      31,
+      0
+    ],
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "layer_bounds": [
+      0,
+      0,
+      162,
+      21
+    ],
+    "layer_reserved": [
+      0,
+      0
+    ],
+    "png": "2FindN.png",
+    "runtime_path": "Data/Image/2FindN.gi"
+  },
+  {
+    "format": "srhd-gi0-rgb565-png-v1",
+    "version": 1,
+    "bounds": [
+      0,
+      0,
+      35,
+      35
+    ],
+    "masks": [
+      63488,
+      2016,
+      31,
+      0
+    ],
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "layer_bounds": [
+      0,
+      0,
+      35,
+      35
+    ],
+    "layer_reserved": [
+      0,
+      0
+    ],
+    "png": "2ShipA.png",
+    "runtime_path": "Data/Image/2ShipA.gi"
+  },
+  {
+    "format": "srhd-gi0-rgb565-png-v1",
+    "version": 1,
+    "bounds": [
+      0,
+      0,
+      35,
+      35
+    ],
+    "masks": [
+      63488,
+      2016,
+      31,
+      0
+    ],
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "layer_bounds": [
+      0,
+      0,
+      35,
+      35
+    ],
+    "layer_reserved": [
+      0,
+      0
+    ],
+    "png": "2ShipD.png",
+    "runtime_path": "Data/Image/2ShipD.gi"
+  },
+  {
+    "format": "srhd-gi0-rgb565-png-v1",
+    "version": 1,
+    "bounds": [
+      0,
+      0,
+      35,
+      35
+    ],
+    "masks": [
+      63488,
+      2016,
+      31,
+      0
+    ],
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "layer_bounds": [
+      0,
+      0,
+      35,
+      35
+    ],
+    "layer_reserved": [
+      0,
+      0
+    ],
+    "png": "2ShipN.png",
+    "runtime_path": "Data/Image/2ShipN.gi"
+  },
+  {
+    "format": "srhd-gi0-rgb565-png-v1",
+    "version": 1,
+    "bounds": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "masks": [
+      63488,
+      2016,
+      31,
+      0
+    ],
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "layer_bounds": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "layer_reserved": [
+      0,
+      0
+    ],
+    "png": "LotteryBackground.png",
+    "runtime_path": "Data/Image/LotteryBackground.gi"
+  },
+  {
+    "format": "srhd-gi0-rgb565-png-v1",
+    "version": 1,
+    "bounds": [
+      0,
+      0,
+      960,
+      680
+    ],
+    "masks": [
+      63488,
+      2016,
+      31,
+      0
+    ],
+    "reserved": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "layer_bounds": [
+      0,
+      0,
+      960,
+      680
+    ],
+    "layer_reserved": [
+      0,
+      0
+    ],
+    "png": "TableBackground.png",
+    "runtime_path": "Data/Image/TableBackground.gi"
+  }
+]

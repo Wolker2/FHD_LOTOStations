@@ -1,0 +1,131 @@
+{
+  "runtime_files": 13,
+  "source_derived_files": 13,
+  "byte_identical_to_upload": true,
+  "different_files": [],
+  "prebuilt_runtime_inputs_used": false,
+  "game_required_for_build": false,
+  "dat_files": 3,
+  "gi_files": 8,
+  "dll_files": 1,
+  "scr_files": 0,
+  "native_code_instructions": 597,
+  "resource_audit": {
+    "cache_references_checked": 8,
+    "missing": [],
+    "native_library_present": true
+  },
+  "static_audit": {
+    "reference_failures": [],
+    "named_buttons": 31,
+    "variable_declarations": 297,
+    "external_game_image_aliases": [
+      "Bm.FormCount2.2AddA",
+      "Bm.FormCount2.2AddD",
+      "Bm.FormCount2.2AddN",
+      "Bm.FormCount2.2CloseA",
+      "Bm.FormCount2.2CloseD",
+      "Bm.FormCount2.2CloseN",
+      "Bm.FormCount2.2SubA",
+      "Bm.FormCount2.2SubD",
+      "Bm.FormCount2.2SubN",
+      "Bm.FormInfo2.2FindA",
+      "Bm.FormInfo2.2FindD",
+      "Bm.FormInfo2.2FindN",
+      "Bm.FormInfo3.ClearButA",
+      "Bm.FormInfo3.ClearButD",
+      "Bm.FormInfo3.ClearButN"
+    ],
+    "findings": [
+      {
+        "id": "lotteryplay-order",
+        "severity": "functional",
+        "fact": "Stored LotteryPlay order is 01..10,100..109,11..99. The prize handlers use prizeType and other values before their declarations and before commit.",
+        "evidence": {
+          "handler_100_position": 10,
+          "declaration_14_position": 23,
+          "sorted_block": true
+        },
+        "live_script_compilation_tested": false
+      },
+      {
+        "id": "native-prize-types",
+        "severity": "functional",
+        "fact": "Game script creates prizeType 4 (hull) and 5 (artifact), but native LotteryCommit and record validation accept only 0..3. Reproduced by DLL emulation."
+      },
+      {
+        "id": "flush-result",
+        "severity": "durability",
+        "fact": "Native LotteryCommit reports success after a complete write even when FlushFileBuffers fails. Reproduced with an injected API failure."
+      }
+    ],
+    "live_game_executed": false
+  },
+  "sha256": {
+    "CFG/CacheData.dat": "09842c9de16dd64409b760489ea0031ba3d96fead01917b4f5ec3dccba122370",
+    "CFG/Main.dat": "ca88919a5409e94356d7f7b9f9378637cd6d7ce11a48bdea99c378de53058c74",
+    "CFG/Rus/Lang.dat": "5fdacc01b9bfc51f9e04c1ec53cddb95b785d7a0c26e5abc63aafd7fbac446cd",
+    "Data/FHDStationsLotteryNative.dll": "c49b5de54718ac6cd164f27cee5062fb9cb882a39d44f2a3172b3310bc7586cf",
+    "Data/Image/2FindA.gi": "179668d511f9bcdc2867b4d9cc6fbc870a084c36952f756a4fed91b3a0524827",
+    "Data/Image/2FindD.gi": "3ccacae2838159f763d18dd3e240e3a81c01a1b05b76b47a732ee547597d9378",
+    "Data/Image/2FindN.gi": "e4ef9fdc56d94b71e0473e735773d9b5f0bbe3c693e4315003be7a80bfcf0b67",
+    "Data/Image/2ShipA.gi": "bb867053e180a01a7ecf17986623bc51cd45836f4b888b5e45269c15f3f0b86a",
+    "Data/Image/2ShipD.gi": "8e6223a4c31d7d38670ec54825a13b21b4d468663c6d0d86378bf6940d6d8926",
+    "Data/Image/2ShipN.gi": "d843a3acb9bc91417ac304e84e9a81a607359b4c20725daf6b6da51dd76ee44c",
+    "Data/Image/LotteryBackground.gi": "e93c24cc8b62cf3ba4bf06f5f3141f0304245e4e3ef046c6c77d4252e29c3af6",
+    "Data/Image/TableBackground.gi": "8418802d0cdaf2728b84af513c6d3804ad70e9ba4e64210a0d94d9c412a022a7",
+    "ModuleInfo.txt": "fe770b1c973d58c62c99ce406c7b8a6cc7d6e1000ac0a3d15c330fec56355f16"
+  },
+  "package_sha256": "0aebc4323ba45c9a584387584546c5438d7e2611b8233c9453f7851f413d98bd",
+  "python": "3.12.14",
+  "zlib": "1.3.2",
+  "pillow": "12.3.0",
+  "assembler": "GNU assembler (GNU Binutils for Ubuntu) 2.42",
+  "linker": "GNU ld (GNU Binutils for Ubuntu) 2.42",
+  "live_game_executed": false,
+  "verified_date": "2026-10-28",
+  "input_archive": "FHD_LOTOStations.rar",
+  "input_sha256": "cb97d8cc86cbda3ded525b5d1156fc254dae74e12b18d2fbb9abd41917317ab4",
+  "input_files": 16,
+  "excluded_non_runtime_files": [
+    "ЛОТЕРЕЯ.bmp",
+    "Поиск Станций.bmp",
+    "FHD_LOTOStations_v4.8_Таблица_наград_BALANCED.txt"
+  ],
+  "unittest": {
+    "passed": 6,
+    "failed": 0
+  },
+  "native_emulation": {
+    "checks_passed": 88,
+    "rng_samples_per_base": 256,
+    "bases_tested": 2,
+    "actual_dll_instructions_executed": true,
+    "windows_apis_and_journal": "in-memory fixture",
+    "live_windows_game_executed": false,
+    "findings": [
+      {
+        "id": "native-prize-types",
+        "fact": "LotteryCommit rejects types 4 and 5; uploaded game script uses both."
+      },
+      {
+        "id": "flush-result",
+        "fact": "LotteryCommit returns 1 after a successful full write even if FlushFileBuffers returns failure."
+      }
+    ]
+  },
+  "unicorn": "2.1.4",
+  "native_source_provenance": "Original C/C++ source was not supplied. Complete x86 assembly, PE fields, readonly data, exports, imports and relocations recovered from the uploaded DLL.",
+  "hosted_github_workflow_executed": false,
+  "script_order_reference": {
+    "file": "SpaceRangersHD_decomp/source/resources/EC_BlockPar.pas",
+    "function": "TBlockParEC.ConcatenateValues",
+    "behavior": "Concatenate values and braced child code in stored entry order; no numeric-key sorting"
+  },
+  "limitations": [
+    "Known original findings are preserved: LotteryPlay order, unsupported prize types 4/5, ignored flush result.",
+    "No live game, game-script compilation, prize delivery, save rollback or actual Windows file durability test.",
+    "No original layered graphics or C/C++ authoring project supplied.",
+    "No hosted GitHub execution, antivirus or moderation verdict."
+  ]
+}
